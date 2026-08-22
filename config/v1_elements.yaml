@@ -1,0 +1,300 @@
+# =============================================================================
+# V1 ELEMENT REGISTRY  --  the machine-readable half of the Validation Contract
+# =============================================================================
+# Every element the framework knows how to validate is declared here, exactly
+# once. Nothing in the validation engine is allowed to hard-code an element
+# name, a comparison rule, or a tolerance -- it all comes from this file.
+#
+# Why that matters: Blueprint Section 19 requires that "the code and
+# configuration are separated enough that a second synthetic mapping scenario
+# can be tested." If comparison logic lived in the engine, swapping in a
+# different source system would mean editing the engine. It doesn't.
+#
+# The human-readable half of the contract is docs/data_dictionary/
+# v1_validation_contract.md. The two must stay in sync; the test suite
+# (tests/test_contract_sync.py) enforces that every element declared here is
+# documented there.
+# =============================================================================
+
+contract_version: "1.0.0"
+fhir_version: "4.0.1"
+
+# -----------------------------------------------------------------------------
+# Sensitivity classes
+# -----------------------------------------------------------------------------
+# Which regulatory bucket an element falls into. This is what makes a
+# consent-aware denominator possible: an element is only "expected" if the
+# patient's consent state authorizes its sensitivity class to move.
+# -----------------------------------------------------------------------------
+sensitivity_classes:
+  routine:
+    description: >-
+      Ordinary behavioral-health treatment information exchangeable under
+      standard HIPAA treatment/payment/operations permissions.
+  sud_part2:
+    description: >-
+      Substance-use-disorder treatment information originating from a Part 2
+      program. Subject to 42 CFR Part 2, which requires patient consent for
+      disclosure beyond the narrow statutory exceptions. Modeled here in
+      simplified form -- see docs/methodology/methodology_note.md, "Consent
+      modeling is deliberately simplified."
+
+# -----------------------------------------------------------------------------
+# Element definitions
+# -----------------------------------------------------------------------------
+# Field meanings:
+#   element_name   Stable identifier used in every dataset and every result row.
+#   element_group  Clinical grouping (encounter/diagnosis/assessment/medication).
+#                  Groups are what get "dropped" as a unit in a linkage failure.
+#   datatype       Drives which normalizer runs.
+#   code_system    Terminology the value is drawn from (null for free values).
+#   fhir_path      Where this element lives in the FHIR R4 representation.
+#                  Documented so a reviewer can trace source -> FHIR -> received.
+#   normalization  Named function in src/validate/normalize.py.
+#   comparison     Named function in src/validate/rules.py.
+#   required       If true, absence at the destination is a completeness failure.
+#                  If false, absence is a "subfield dropped" partial-fidelity
+#                  failure -- the parent element arrived but incompletely.
+#   tolerance      Comparison slack. Explicit even when zero, because an
+#                  unstated tolerance is the most common way a data-quality
+#                  metric becomes irreproducible.
+# -----------------------------------------------------------------------------
+elements:
+
+  # --- Encounter ------------------------------------------------------------
+  - element_name: encounter_class
+    element_group: encounter
+    datatype: code
+    code_system: "http://terminology.hl7.org/CodeSystem/v3-ActCode"
+    fhir_path: "Encounter.class.code"
+    normalization: upper_trim
+    comparison: exact
+    required: true
+    tolerance: null
+    notes: >-
+      AMB (ambulatory) vs EMER (emergency/crisis). Drives the timeliness
+      threshold, so a corrupted value has downstream consequences beyond
+      itself -- a useful property to demonstrate.
+
+  - element_name: encounter_datetime
+    element_group: encounter
+    datatype: datetime
+    code_system: null
+    fhir_path: "Encounter.period.start"
+    normalization: iso_datetime
+    comparison: exact_datetime
+    required: true
+    tolerance: "0 seconds"
+    notes: >-
+      The clinical time of the encounter. Distinct from sent_timestamp and
+      received_timestamp, which are exchange metadata, not clinical content.
+
+  # --- Diagnosis ------------------------------------------------------------
+  - element_name: diagnosis_code
+    element_group: diagnosis
+    datatype: code
+    code_system: "http://hl7.org/fhir/sid/icd-10-cm"
+    fhir_path: "Condition.code.coding.code"
+    normalization: upper_trim
+    comparison: code_equivalence
+    required: true
+    tolerance: null
+    notes: >-
+      Uses code_equivalence rather than exact so the framework can distinguish
+      a DEGRADED code (received code is a documented broader ancestor of the
+      expected code -- meaning survived partially) from an INCORRECT code
+      (unrelated concept). That distinction is the whole point of the semantic
+      dimension; an exact-match comparison would collapse both into
+      "mismatch" and lose it.
+
+  - element_name: diagnosis_display
+    element_group: diagnosis
+    datatype: text
+    code_system: null
+    fhir_path: "Condition.code.coding.display"
+    normalization: text_normalized
+    comparison: text_equivalence
+    required: false
+    tolerance: "case, punctuation, and whitespace insensitive"
+    notes: >-
+      Display text is advisory, not authoritative -- the code is what carries
+      meaning. Marked required:false so a missing display is a subfield-dropped
+      partial-fidelity finding rather than a completeness failure. Treating
+      display text as required would inflate the completeness failure count
+      with findings no clinician would care about.
+
+  - element_name: diagnosis_onset
+    element_group: diagnosis
+    datatype: date
+    code_system: null
+    fhir_path: "Condition.onsetDateTime"
+    normalization: iso_date
+    comparison: exact_date
+    required: false
+    tolerance: "0 days"
+
+  # --- Assessment -----------------------------------------------------------
+  - element_name: assessment_code
+    element_group: assessment
+    datatype: code
+    code_system: "http://loinc.org"
+    fhir_path: "Observation.code.coding.code"
+    normalization: upper_trim
+    comparison: exact
+    required: true
+    tolerance: null
+    notes: >-
+      LOINC 44249-1 = PHQ-9 total score panel; 70274-6 = GAD-7 total score.
+      Exact comparison: an assessment instrument either is or is not the
+      instrument that was administered. There is no meaningful "broader"
+      PHQ-9.
+
+  - element_name: assessment_score
+    element_group: assessment
+    datatype: numeric
+    code_system: null
+    fhir_path: "Observation.valueQuantity.value"
+    normalization: numeric
+    comparison: numeric_exact
+    required: true
+    tolerance: 0
+    notes: >-
+      Zero tolerance is a deliberate clinical judgment, not laziness. PHQ-9
+      severity bands are 5 points wide (0-4 minimal, 5-9 mild, 10-14 moderate,
+      15-19 moderately severe, 20-27 severe), so even a small numeric drift
+      can move a patient across a band boundary and change a treatment
+      decision. Any tolerance > 0 would have to be defended clinically; zero
+      does not.
+
+  - element_name: assessment_datetime
+    element_group: assessment
+    datatype: datetime
+    code_system: null
+    fhir_path: "Observation.effectiveDateTime"
+    normalization: iso_datetime
+    comparison: exact_datetime
+    required: false
+    tolerance: "0 seconds"
+
+  # --- Medication -----------------------------------------------------------
+  - element_name: medication_code
+    element_group: medication
+    datatype: code
+    code_system: "http://www.nlm.nih.gov/research/umls/rxnorm"
+    fhir_path: "MedicationRequest.medicationCodeableConcept.coding.code"
+    normalization: upper_trim
+    comparison: code_equivalence
+    required: true
+    tolerance: null
+    notes: >-
+      RxNorm degradation is real and common: a specific clinical drug (SCD)
+      such as "sertraline 50 MG oral tablet" collapsing to the ingredient
+      concept "sertraline" loses the strength and form. Same degraded-vs-
+      incorrect distinction as diagnosis_code.
+
+  - element_name: medication_dose
+    element_group: medication
+    datatype: quantity
+    code_system: "http://unitsofmeasure.org"
+    fhir_path: "MedicationRequest.dosageInstruction.doseAndRate.doseQuantity"
+    normalization: dose_quantity
+    comparison: quantity_equivalence
+    required: false
+    tolerance: "unit-normalized exact (1 g == 1000 mg)"
+    notes: >-
+      Normalized to milligrams before comparison so that a unit conversion is
+      not reported as a value change. 0.05 g and 50 mg are the same dose and
+      must compare equal; 50 mg and 100 mg must not.
+
+  - element_name: medication_frequency
+    element_group: medication
+    datatype: code
+    code_system: "http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation"
+    fhir_path: "MedicationRequest.dosageInstruction.timing.code.coding.code"
+    normalization: frequency_code
+    comparison: exact
+    required: false
+    tolerance: null
+    notes: >-
+      Free-text frequency ("daily", "once daily", "QD", "every day") is mapped
+      to a canonical timing abbreviation before comparison. Without this
+      normalization the framework would generate false positives on every
+      source/destination pair that renders frequency differently -- which is
+      exactly the kind of spurious finding that destroys trust in a
+      data-quality tool.
+
+# -----------------------------------------------------------------------------
+# Timeliness thresholds
+# -----------------------------------------------------------------------------
+# Latency = received_timestamp - sent_timestamp. Threshold depends on the
+# clinical urgency of the encounter, which is why encounter_class matters here.
+# These values are illustrative parameters of the synthetic experiment, NOT
+# published clinical standards. Documented as such in the methodology note.
+# -----------------------------------------------------------------------------
+timeliness:
+  default_threshold_minutes: 1440   # 24h for routine ambulatory exchange
+  by_encounter_class:
+    EMER: 60                        # crisis data is time-critical
+    AMB: 1440
+
+# -----------------------------------------------------------------------------
+# Failure classification vocabulary
+# -----------------------------------------------------------------------------
+# The closed set of verdicts the engine may emit. Fixed here so that the
+# evaluation layer can score detection per class without string drift.
+# -----------------------------------------------------------------------------
+failure_classes:
+  missing_element:
+    dimension: completeness
+    description: An element in the expected set never arrived at the destination.
+  subfield_dropped:
+    dimension: fidelity
+    description: >-
+      A non-required element of an otherwise-present group is absent. The
+      clinical group arrived but incompletely.
+  value_mismatch:
+    dimension: fidelity
+    description: >-
+      The element arrived but its normalized value differs from the expected
+      value, with no documented semantic relationship between the two.
+  semantic_degraded:
+    dimension: semantic
+    description: >-
+      The element arrived carrying a documented broader/less specific concept
+      than expected. Meaning partially survived.
+  patient_linkage:
+    dimension: linkage
+    description: The element arrived attached to the wrong patient.
+  encounter_linkage:
+    dimension: linkage
+    description: >-
+      The element arrived attached to the wrong encounter for the correct
+      patient. Present, but contextually wrong.
+  timeliness:
+    dimension: timeliness
+    description: >-
+      The element arrived, intact, after the threshold for its encounter class.
+  unauthorized_disclosure:
+    dimension: consent
+    description: >-
+      An element that consent required be withheld was nonetheless present at
+      the destination.
+  consent_over_restriction:
+    dimension: consent
+    description: >-
+      An authorized element was withheld by a faulty restriction rule. Looks
+      identical to missing_element from the destination's point of view; the
+      two are separated by whether the element's sensitivity class was
+      actually restricted for that patient.
+
+# -----------------------------------------------------------------------------
+# Non-failure verdicts
+# -----------------------------------------------------------------------------
+pass_classes:
+  exact_match:
+    description: Element arrived and matched under its documented comparison rule.
+  authorized_exclusion:
+    description: >-
+      Element was correctly withheld because consent did not authorize its
+      sensitivity class. Blueprint Section 5: this is a PASS, and must never be
+      counted in the completeness denominator.

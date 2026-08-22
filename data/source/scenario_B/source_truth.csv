@@ -1,0 +1,163 @@
+element_uid,scenario_id,patient_id,encounter_id,group_id,element_group,element_name,element_value,code_system,sensitivity_class,encounter_class,encounter_datetime,source_system
+B:B-P0001:B-P0001-E01:ENC:encounter_class,B,B-P0001,B-P0001-E01,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-04-07T10:15:00,BH_EHR_B
+B:B-P0001:B-P0001-E01:ENC:encounter_datetime,B,B-P0001,B-P0001-E01,ENC,encounter,encounter_datetime,2026-04-07T10:15:00,,routine,AMB,2026-04-07T10:15:00,BH_EHR_B
+B:B-P0001:B-P0001-E01:DX1:diagnosis_code,B,B-P0001,B-P0001-E01,DX1,diagnosis,diagnosis_code,F33.1,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-04-07T10:15:00,BH_EHR_B
+B:B-P0001:B-P0001-E01:DX1:diagnosis_display,B,B-P0001,B-P0001-E01,DX1,diagnosis,diagnosis_display,"Major depressive disorder, recurrent, moderate",,routine,AMB,2026-04-07T10:15:00,BH_EHR_B
+B:B-P0001:B-P0001-E01:DX1:diagnosis_onset,B,B-P0001,B-P0001-E01,DX1,diagnosis,diagnosis_onset,2024-09-21,,routine,AMB,2026-04-07T10:15:00,BH_EHR_B
+B:B-P0001:B-P0001-E01:OBS1:assessment_code,B,B-P0001,B-P0001-E01,OBS1,assessment,assessment_code,44249-1,http://loinc.org,routine,AMB,2026-04-07T10:15:00,BH_EHR_B
+B:B-P0001:B-P0001-E01:OBS1:assessment_score,B,B-P0001,B-P0001-E01,OBS1,assessment,assessment_score,22,,routine,AMB,2026-04-07T10:15:00,BH_EHR_B
+B:B-P0001:B-P0001-E01:OBS1:assessment_datetime,B,B-P0001,B-P0001-E01,OBS1,assessment,assessment_datetime,2026-04-07T10:35:00,,routine,AMB,2026-04-07T10:15:00,BH_EHR_B
+B:B-P0001:B-P0001-E02:ENC:encounter_class,B,B-P0001,B-P0001-E02,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-05-04T14:45:00,BH_EHR_B
+B:B-P0001:B-P0001-E02:ENC:encounter_datetime,B,B-P0001,B-P0001-E02,ENC,encounter,encounter_datetime,2026-05-04T14:45:00,,routine,AMB,2026-05-04T14:45:00,BH_EHR_B
+B:B-P0001:B-P0001-E02:DX1:diagnosis_code,B,B-P0001,B-P0001-E02,DX1,diagnosis,diagnosis_code,F43.10,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-05-04T14:45:00,BH_EHR_B
+B:B-P0001:B-P0001-E02:DX1:diagnosis_display,B,B-P0001,B-P0001-E02,DX1,diagnosis,diagnosis_display,"Post-traumatic stress disorder, unspecified",,routine,AMB,2026-05-04T14:45:00,BH_EHR_B
+B:B-P0001:B-P0001-E02:DX1:diagnosis_onset,B,B-P0001,B-P0001-E02,DX1,diagnosis,diagnosis_onset,2025-12-23,,routine,AMB,2026-05-04T14:45:00,BH_EHR_B
+B:B-P0001:B-P0001-E02:MED1:medication_code,B,B-P0001,B-P0001-E02,MED1,medication,medication_code,310385,http://www.nlm.nih.gov/research/umls/rxnorm,routine,AMB,2026-05-04T14:45:00,BH_EHR_B
+B:B-P0001:B-P0001-E02:MED1:medication_dose,B,B-P0001,B-P0001-E02,MED1,medication,medication_dose,20 mg,,routine,AMB,2026-05-04T14:45:00,BH_EHR_B
+B:B-P0001:B-P0001-E02:MED1:medication_frequency,B,B-P0001,B-P0001-E02,MED1,medication,medication_frequency,daily,http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation,routine,AMB,2026-05-04T14:45:00,BH_EHR_B
+B:B-P0001:B-P0001-E03:ENC:encounter_class,B,B-P0001,B-P0001-E03,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-05-11T17:00:00,BH_EHR_B
+B:B-P0001:B-P0001-E03:ENC:encounter_datetime,B,B-P0001,B-P0001-E03,ENC,encounter,encounter_datetime,2026-05-11T17:00:00,,routine,AMB,2026-05-11T17:00:00,BH_EHR_B
+B:B-P0001:B-P0001-E03:DX1:diagnosis_code,B,B-P0001,B-P0001-E03,DX1,diagnosis,diagnosis_code,F32.1,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-05-11T17:00:00,BH_EHR_B
+B:B-P0001:B-P0001-E03:DX1:diagnosis_display,B,B-P0001,B-P0001-E03,DX1,diagnosis,diagnosis_display,"Major depressive disorder, single episode, moderate",,routine,AMB,2026-05-11T17:00:00,BH_EHR_B
+B:B-P0001:B-P0001-E03:DX1:diagnosis_onset,B,B-P0001,B-P0001-E03,DX1,diagnosis,diagnosis_onset,2026-01-26,,routine,AMB,2026-05-11T17:00:00,BH_EHR_B
+B:B-P0001:B-P0001-E03:OBS1:assessment_code,B,B-P0001,B-P0001-E03,OBS1,assessment,assessment_code,44249-1,http://loinc.org,routine,AMB,2026-05-11T17:00:00,BH_EHR_B
+B:B-P0001:B-P0001-E03:OBS1:assessment_score,B,B-P0001,B-P0001-E03,OBS1,assessment,assessment_score,10,,routine,AMB,2026-05-11T17:00:00,BH_EHR_B
+B:B-P0001:B-P0001-E03:OBS1:assessment_datetime,B,B-P0001,B-P0001-E03,OBS1,assessment,assessment_datetime,2026-05-11T17:20:00,,routine,AMB,2026-05-11T17:00:00,BH_EHR_B
+B:B-P0002:B-P0002-E01:ENC:encounter_class,B,B-P0002,B-P0002-E01,ENC,encounter,encounter_class,EMER,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,EMER,2026-03-30T10:45:00,BH_EHR_B
+B:B-P0002:B-P0002-E01:ENC:encounter_datetime,B,B-P0002,B-P0002-E01,ENC,encounter,encounter_datetime,2026-03-30T10:45:00,,routine,EMER,2026-03-30T10:45:00,BH_EHR_B
+B:B-P0002:B-P0002-E01:DX1:diagnosis_code,B,B-P0002,B-P0002-E01,DX1,diagnosis,diagnosis_code,F31.32,http://hl7.org/fhir/sid/icd-10-cm,routine,EMER,2026-03-30T10:45:00,BH_EHR_B
+B:B-P0002:B-P0002-E01:DX1:diagnosis_display,B,B-P0002,B-P0002-E01,DX1,diagnosis,diagnosis_display,"Bipolar disorder, current episode depressed, moderate",,routine,EMER,2026-03-30T10:45:00,BH_EHR_B
+B:B-P0002:B-P0002-E01:DX1:diagnosis_onset,B,B-P0002,B-P0002-E01,DX1,diagnosis,diagnosis_onset,2025-08-18,,routine,EMER,2026-03-30T10:45:00,BH_EHR_B
+B:B-P0002:B-P0002-E01:OBS1:assessment_code,B,B-P0002,B-P0002-E01,OBS1,assessment,assessment_code,44249-1,http://loinc.org,routine,EMER,2026-03-30T10:45:00,BH_EHR_B
+B:B-P0002:B-P0002-E01:OBS1:assessment_score,B,B-P0002,B-P0002-E01,OBS1,assessment,assessment_score,20,,routine,EMER,2026-03-30T10:45:00,BH_EHR_B
+B:B-P0002:B-P0002-E01:OBS1:assessment_datetime,B,B-P0002,B-P0002-E01,OBS1,assessment,assessment_datetime,2026-03-30T10:55:00,,routine,EMER,2026-03-30T10:45:00,BH_EHR_B
+B:B-P0003:B-P0003-E01:ENC:encounter_class,B,B-P0003,B-P0003-E01,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-04-05T15:15:00,BH_EHR_B
+B:B-P0003:B-P0003-E01:ENC:encounter_datetime,B,B-P0003,B-P0003-E01,ENC,encounter,encounter_datetime,2026-04-05T15:15:00,,routine,AMB,2026-04-05T15:15:00,BH_EHR_B
+B:B-P0003:B-P0003-E01:DX1:diagnosis_code,B,B-P0003,B-P0003-E01,DX1,diagnosis,diagnosis_code,F33.1,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-04-05T15:15:00,BH_EHR_B
+B:B-P0003:B-P0003-E01:DX1:diagnosis_display,B,B-P0003,B-P0003-E01,DX1,diagnosis,diagnosis_display,"Major depressive disorder, recurrent, moderate",,routine,AMB,2026-04-05T15:15:00,BH_EHR_B
+B:B-P0003:B-P0003-E01:DX1:diagnosis_onset,B,B-P0003,B-P0003-E01,DX1,diagnosis,diagnosis_onset,2024-10-23,,routine,AMB,2026-04-05T15:15:00,BH_EHR_B
+B:B-P0003:B-P0003-E01:OBS1:assessment_code,B,B-P0003,B-P0003-E01,OBS1,assessment,assessment_code,44249-1,http://loinc.org,routine,AMB,2026-04-05T15:15:00,BH_EHR_B
+B:B-P0003:B-P0003-E01:OBS1:assessment_score,B,B-P0003,B-P0003-E01,OBS1,assessment,assessment_score,18,,routine,AMB,2026-04-05T15:15:00,BH_EHR_B
+B:B-P0003:B-P0003-E01:OBS1:assessment_datetime,B,B-P0003,B-P0003-E01,OBS1,assessment,assessment_datetime,2026-04-05T15:35:00,,routine,AMB,2026-04-05T15:15:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:ENC:encounter_class,B,B-P0003,B-P0003-E02,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:ENC:encounter_datetime,B,B-P0003,B-P0003-E02,ENC,encounter,encounter_datetime,2026-04-16T23:30:00,,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:DX1:diagnosis_code,B,B-P0003,B-P0003-E02,DX1,diagnosis,diagnosis_code,F43.10,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:DX1:diagnosis_display,B,B-P0003,B-P0003-E02,DX1,diagnosis,diagnosis_display,"Post-traumatic stress disorder, unspecified",,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:DX1:diagnosis_onset,B,B-P0003,B-P0003-E02,DX1,diagnosis,diagnosis_onset,2024-07-28,,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:OBS1:assessment_code,B,B-P0003,B-P0003-E02,OBS1,assessment,assessment_code,44249-1,http://loinc.org,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:OBS1:assessment_score,B,B-P0003,B-P0003-E02,OBS1,assessment,assessment_score,16,,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:OBS1:assessment_datetime,B,B-P0003,B-P0003-E02,OBS1,assessment,assessment_datetime,2026-04-17T00:00:00,,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:OBS2:assessment_code,B,B-P0003,B-P0003-E02,OBS2,assessment,assessment_code,70274-6,http://loinc.org,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:OBS2:assessment_score,B,B-P0003,B-P0003-E02,OBS2,assessment,assessment_score,6,,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:OBS2:assessment_datetime,B,B-P0003,B-P0003-E02,OBS2,assessment,assessment_datetime,2026-04-16T23:40:00,,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:MED1:medication_code,B,B-P0003,B-P0003-E02,MED1,medication,medication_code,310385,http://www.nlm.nih.gov/research/umls/rxnorm,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:MED1:medication_dose,B,B-P0003,B-P0003-E02,MED1,medication,medication_dose,20 mg,,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0003:B-P0003-E02:MED1:medication_frequency,B,B-P0003,B-P0003-E02,MED1,medication,medication_frequency,daily,http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation,routine,AMB,2026-04-16T23:30:00,BH_EHR_B
+B:B-P0004:B-P0004-E01:ENC:encounter_class,B,B-P0004,B-P0004-E01,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-04-16T08:15:00,BH_EHR_B
+B:B-P0004:B-P0004-E01:ENC:encounter_datetime,B,B-P0004,B-P0004-E01,ENC,encounter,encounter_datetime,2026-04-16T08:15:00,,routine,AMB,2026-04-16T08:15:00,BH_EHR_B
+B:B-P0004:B-P0004-E01:DX1:diagnosis_code,B,B-P0004,B-P0004-E01,DX1,diagnosis,diagnosis_code,F31.32,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-04-16T08:15:00,BH_EHR_B
+B:B-P0004:B-P0004-E01:DX1:diagnosis_display,B,B-P0004,B-P0004-E01,DX1,diagnosis,diagnosis_display,"Bipolar disorder, current episode depressed, moderate",,routine,AMB,2026-04-16T08:15:00,BH_EHR_B
+B:B-P0004:B-P0004-E01:DX1:diagnosis_onset,B,B-P0004,B-P0004-E01,DX1,diagnosis,diagnosis_onset,2025-08-24,,routine,AMB,2026-04-16T08:15:00,BH_EHR_B
+B:B-P0004:B-P0004-E01:OBS1:assessment_code,B,B-P0004,B-P0004-E01,OBS1,assessment,assessment_code,44249-1,http://loinc.org,routine,AMB,2026-04-16T08:15:00,BH_EHR_B
+B:B-P0004:B-P0004-E01:OBS1:assessment_score,B,B-P0004,B-P0004-E01,OBS1,assessment,assessment_score,24,,routine,AMB,2026-04-16T08:15:00,BH_EHR_B
+B:B-P0004:B-P0004-E01:OBS1:assessment_datetime,B,B-P0004,B-P0004-E01,OBS1,assessment,assessment_datetime,2026-04-16T08:35:00,,routine,AMB,2026-04-16T08:15:00,BH_EHR_B
+B:B-P0004:B-P0004-E02:ENC:encounter_class,B,B-P0004,B-P0004-E02,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-04-25T10:30:00,BH_EHR_B
+B:B-P0004:B-P0004-E02:ENC:encounter_datetime,B,B-P0004,B-P0004-E02,ENC,encounter,encounter_datetime,2026-04-25T10:30:00,,routine,AMB,2026-04-25T10:30:00,BH_EHR_B
+B:B-P0004:B-P0004-E02:DX1:diagnosis_code,B,B-P0004,B-P0004-E02,DX1,diagnosis,diagnosis_code,F10.20,http://hl7.org/fhir/sid/icd-10-cm,sud_part2,AMB,2026-04-25T10:30:00,BH_EHR_B
+B:B-P0004:B-P0004-E02:DX1:diagnosis_display,B,B-P0004,B-P0004-E02,DX1,diagnosis,diagnosis_display,"Alcohol dependence, uncomplicated",,sud_part2,AMB,2026-04-25T10:30:00,BH_EHR_B
+B:B-P0004:B-P0004-E02:DX1:diagnosis_onset,B,B-P0004,B-P0004-E02,DX1,diagnosis,diagnosis_onset,2025-06-25,,sud_part2,AMB,2026-04-25T10:30:00,BH_EHR_B
+B:B-P0004:B-P0004-E02:OBS1:assessment_code,B,B-P0004,B-P0004-E02,OBS1,assessment,assessment_code,44249-1,http://loinc.org,sud_part2,AMB,2026-04-25T10:30:00,BH_EHR_B
+B:B-P0004:B-P0004-E02:OBS1:assessment_score,B,B-P0004,B-P0004-E02,OBS1,assessment,assessment_score,19,,sud_part2,AMB,2026-04-25T10:30:00,BH_EHR_B
+B:B-P0004:B-P0004-E02:OBS1:assessment_datetime,B,B-P0004,B-P0004-E02,OBS1,assessment,assessment_datetime,2026-04-25T10:40:00,,sud_part2,AMB,2026-04-25T10:30:00,BH_EHR_B
+B:B-P0004:B-P0004-E02:MED1:medication_code,B,B-P0004,B-P0004-E02,MED1,medication,medication_code,1116442,http://www.nlm.nih.gov/research/umls/rxnorm,sud_part2,AMB,2026-04-25T10:30:00,BH_EHR_B
+B:B-P0004:B-P0004-E02:MED1:medication_dose,B,B-P0004,B-P0004-E02,MED1,medication,medication_dose,380 mg,,sud_part2,AMB,2026-04-25T10:30:00,BH_EHR_B
+B:B-P0004:B-P0004-E02:MED1:medication_frequency,B,B-P0004,B-P0004-E02,MED1,medication,medication_frequency,monthly,http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation,sud_part2,AMB,2026-04-25T10:30:00,BH_EHR_B
+B:B-P0005:B-P0005-E01:ENC:encounter_class,B,B-P0005,B-P0005-E01,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-04-21T16:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E01:ENC:encounter_datetime,B,B-P0005,B-P0005-E01,ENC,encounter,encounter_datetime,2026-04-21T16:45:00,,routine,AMB,2026-04-21T16:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E01:DX1:diagnosis_code,B,B-P0005,B-P0005-E01,DX1,diagnosis,diagnosis_code,F41.1,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-04-21T16:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E01:DX1:diagnosis_display,B,B-P0005,B-P0005-E01,DX1,diagnosis,diagnosis_display,Generalized anxiety disorder,,routine,AMB,2026-04-21T16:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E01:DX1:diagnosis_onset,B,B-P0005,B-P0005-E01,DX1,diagnosis,diagnosis_onset,2025-11-07,,routine,AMB,2026-04-21T16:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E01:OBS1:assessment_code,B,B-P0005,B-P0005-E01,OBS1,assessment,assessment_code,70274-6,http://loinc.org,routine,AMB,2026-04-21T16:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E01:OBS1:assessment_score,B,B-P0005,B-P0005-E01,OBS1,assessment,assessment_score,11,,routine,AMB,2026-04-21T16:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E01:OBS1:assessment_datetime,B,B-P0005,B-P0005-E01,OBS1,assessment,assessment_datetime,2026-04-21T17:05:00,,routine,AMB,2026-04-21T16:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E01:MED1:medication_code,B,B-P0005,B-P0005-E01,MED1,medication,medication_code,312940,http://www.nlm.nih.gov/research/umls/rxnorm,routine,AMB,2026-04-21T16:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E01:MED1:medication_dose,B,B-P0005,B-P0005-E01,MED1,medication,medication_dose,50 mg,,routine,AMB,2026-04-21T16:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E01:MED1:medication_frequency,B,B-P0005,B-P0005-E01,MED1,medication,medication_frequency,daily,http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation,routine,AMB,2026-04-21T16:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E02:ENC:encounter_class,B,B-P0005,B-P0005-E02,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-05-15T19:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E02:ENC:encounter_datetime,B,B-P0005,B-P0005-E02,ENC,encounter,encounter_datetime,2026-05-15T19:45:00,,routine,AMB,2026-05-15T19:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E02:DX1:diagnosis_code,B,B-P0005,B-P0005-E02,DX1,diagnosis,diagnosis_code,F10.20,http://hl7.org/fhir/sid/icd-10-cm,sud_part2,AMB,2026-05-15T19:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E02:DX1:diagnosis_display,B,B-P0005,B-P0005-E02,DX1,diagnosis,diagnosis_display,"Alcohol dependence, uncomplicated",,sud_part2,AMB,2026-05-15T19:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E02:DX1:diagnosis_onset,B,B-P0005,B-P0005-E02,DX1,diagnosis,diagnosis_onset,2025-09-05,,sud_part2,AMB,2026-05-15T19:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E02:OBS1:assessment_code,B,B-P0005,B-P0005-E02,OBS1,assessment,assessment_code,44249-1,http://loinc.org,sud_part2,AMB,2026-05-15T19:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E02:OBS1:assessment_score,B,B-P0005,B-P0005-E02,OBS1,assessment,assessment_score,20,,sud_part2,AMB,2026-05-15T19:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E02:OBS1:assessment_datetime,B,B-P0005,B-P0005-E02,OBS1,assessment,assessment_datetime,2026-05-15T19:55:00,,sud_part2,AMB,2026-05-15T19:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E02:MED1:medication_code,B,B-P0005,B-P0005-E02,MED1,medication,medication_code,1116442,http://www.nlm.nih.gov/research/umls/rxnorm,sud_part2,AMB,2026-05-15T19:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E02:MED1:medication_dose,B,B-P0005,B-P0005-E02,MED1,medication,medication_dose,380 mg,,sud_part2,AMB,2026-05-15T19:45:00,BH_EHR_B
+B:B-P0005:B-P0005-E02:MED1:medication_frequency,B,B-P0005,B-P0005-E02,MED1,medication,medication_frequency,monthly,http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation,sud_part2,AMB,2026-05-15T19:45:00,BH_EHR_B
+B:B-P0006:B-P0006-E01:ENC:encounter_class,B,B-P0006,B-P0006-E01,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-04-10T15:30:00,BH_EHR_B
+B:B-P0006:B-P0006-E01:ENC:encounter_datetime,B,B-P0006,B-P0006-E01,ENC,encounter,encounter_datetime,2026-04-10T15:30:00,,routine,AMB,2026-04-10T15:30:00,BH_EHR_B
+B:B-P0006:B-P0006-E01:DX1:diagnosis_code,B,B-P0006,B-P0006-E01,DX1,diagnosis,diagnosis_code,F43.10,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-04-10T15:30:00,BH_EHR_B
+B:B-P0006:B-P0006-E01:DX1:diagnosis_display,B,B-P0006,B-P0006-E01,DX1,diagnosis,diagnosis_display,"Post-traumatic stress disorder, unspecified",,routine,AMB,2026-04-10T15:30:00,BH_EHR_B
+B:B-P0006:B-P0006-E01:DX1:diagnosis_onset,B,B-P0006,B-P0006-E01,DX1,diagnosis,diagnosis_onset,2025-11-12,,routine,AMB,2026-04-10T15:30:00,BH_EHR_B
+B:B-P0006:B-P0006-E01:OBS1:assessment_code,B,B-P0006,B-P0006-E01,OBS1,assessment,assessment_code,44249-1,http://loinc.org,routine,AMB,2026-04-10T15:30:00,BH_EHR_B
+B:B-P0006:B-P0006-E01:OBS1:assessment_score,B,B-P0006,B-P0006-E01,OBS1,assessment,assessment_score,10,,routine,AMB,2026-04-10T15:30:00,BH_EHR_B
+B:B-P0006:B-P0006-E01:OBS1:assessment_datetime,B,B-P0006,B-P0006-E01,OBS1,assessment,assessment_datetime,2026-04-10T16:00:00,,routine,AMB,2026-04-10T15:30:00,BH_EHR_B
+B:B-P0006:B-P0006-E02:ENC:encounter_class,B,B-P0006,B-P0006-E02,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-04-27T17:00:00,BH_EHR_B
+B:B-P0006:B-P0006-E02:ENC:encounter_datetime,B,B-P0006,B-P0006-E02,ENC,encounter,encounter_datetime,2026-04-27T17:00:00,,routine,AMB,2026-04-27T17:00:00,BH_EHR_B
+B:B-P0006:B-P0006-E02:DX1:diagnosis_code,B,B-P0006,B-P0006-E02,DX1,diagnosis,diagnosis_code,F43.10,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-04-27T17:00:00,BH_EHR_B
+B:B-P0006:B-P0006-E02:DX1:diagnosis_display,B,B-P0006,B-P0006-E02,DX1,diagnosis,diagnosis_display,"Post-traumatic stress disorder, unspecified",,routine,AMB,2026-04-27T17:00:00,BH_EHR_B
+B:B-P0006:B-P0006-E02:DX1:diagnosis_onset,B,B-P0006,B-P0006-E02,DX1,diagnosis,diagnosis_onset,2025-12-05,,routine,AMB,2026-04-27T17:00:00,BH_EHR_B
+B:B-P0006:B-P0006-E02:OBS1:assessment_code,B,B-P0006,B-P0006-E02,OBS1,assessment,assessment_code,44249-1,http://loinc.org,routine,AMB,2026-04-27T17:00:00,BH_EHR_B
+B:B-P0006:B-P0006-E02:OBS1:assessment_score,B,B-P0006,B-P0006-E02,OBS1,assessment,assessment_score,27,,routine,AMB,2026-04-27T17:00:00,BH_EHR_B
+B:B-P0006:B-P0006-E02:OBS1:assessment_datetime,B,B-P0006,B-P0006-E02,OBS1,assessment,assessment_datetime,2026-04-27T17:30:00,,routine,AMB,2026-04-27T17:00:00,BH_EHR_B
+B:B-P0006:B-P0006-E02:MED1:medication_code,B,B-P0006,B-P0006-E02,MED1,medication,medication_code,310385,http://www.nlm.nih.gov/research/umls/rxnorm,routine,AMB,2026-04-27T17:00:00,BH_EHR_B
+B:B-P0006:B-P0006-E02:MED1:medication_dose,B,B-P0006,B-P0006-E02,MED1,medication,medication_dose,20 mg,,routine,AMB,2026-04-27T17:00:00,BH_EHR_B
+B:B-P0006:B-P0006-E02:MED1:medication_frequency,B,B-P0006,B-P0006-E02,MED1,medication,medication_frequency,daily,http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation,routine,AMB,2026-04-27T17:00:00,BH_EHR_B
+B:B-P0007:B-P0007-E01:ENC:encounter_class,B,B-P0007,B-P0007-E01,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-03-14T14:00:00,BH_EHR_B
+B:B-P0007:B-P0007-E01:ENC:encounter_datetime,B,B-P0007,B-P0007-E01,ENC,encounter,encounter_datetime,2026-03-14T14:00:00,,routine,AMB,2026-03-14T14:00:00,BH_EHR_B
+B:B-P0007:B-P0007-E01:DX1:diagnosis_code,B,B-P0007,B-P0007-E01,DX1,diagnosis,diagnosis_code,F32.1,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-03-14T14:00:00,BH_EHR_B
+B:B-P0007:B-P0007-E01:DX1:diagnosis_display,B,B-P0007,B-P0007-E01,DX1,diagnosis,diagnosis_display,"Major depressive disorder, single episode, moderate",,routine,AMB,2026-03-14T14:00:00,BH_EHR_B
+B:B-P0007:B-P0007-E01:DX1:diagnosis_onset,B,B-P0007,B-P0007-E01,DX1,diagnosis,diagnosis_onset,2023-12-13,,routine,AMB,2026-03-14T14:00:00,BH_EHR_B
+B:B-P0007:B-P0007-E01:OBS1:assessment_code,B,B-P0007,B-P0007-E01,OBS1,assessment,assessment_code,44249-1,http://loinc.org,routine,AMB,2026-03-14T14:00:00,BH_EHR_B
+B:B-P0007:B-P0007-E01:OBS1:assessment_score,B,B-P0007,B-P0007-E01,OBS1,assessment,assessment_score,27,,routine,AMB,2026-03-14T14:00:00,BH_EHR_B
+B:B-P0007:B-P0007-E01:OBS1:assessment_datetime,B,B-P0007,B-P0007-E01,OBS1,assessment,assessment_datetime,2026-03-14T14:30:00,,routine,AMB,2026-03-14T14:00:00,BH_EHR_B
+B:B-P0007:B-P0007-E02:ENC:encounter_class,B,B-P0007,B-P0007-E02,ENC,encounter,encounter_class,EMER,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,EMER,2026-04-11T22:45:00,BH_EHR_B
+B:B-P0007:B-P0007-E02:ENC:encounter_datetime,B,B-P0007,B-P0007-E02,ENC,encounter,encounter_datetime,2026-04-11T22:45:00,,routine,EMER,2026-04-11T22:45:00,BH_EHR_B
+B:B-P0007:B-P0007-E02:DX1:diagnosis_code,B,B-P0007,B-P0007-E02,DX1,diagnosis,diagnosis_code,F31.32,http://hl7.org/fhir/sid/icd-10-cm,routine,EMER,2026-04-11T22:45:00,BH_EHR_B
+B:B-P0007:B-P0007-E02:DX1:diagnosis_display,B,B-P0007,B-P0007-E02,DX1,diagnosis,diagnosis_display,"Bipolar disorder, current episode depressed, moderate",,routine,EMER,2026-04-11T22:45:00,BH_EHR_B
+B:B-P0007:B-P0007-E02:DX1:diagnosis_onset,B,B-P0007,B-P0007-E02,DX1,diagnosis,diagnosis_onset,2024-01-13,,routine,EMER,2026-04-11T22:45:00,BH_EHR_B
+B:B-P0007:B-P0007-E02:OBS1:assessment_code,B,B-P0007,B-P0007-E02,OBS1,assessment,assessment_code,44249-1,http://loinc.org,routine,EMER,2026-04-11T22:45:00,BH_EHR_B
+B:B-P0007:B-P0007-E02:OBS1:assessment_score,B,B-P0007,B-P0007-E02,OBS1,assessment,assessment_score,16,,routine,EMER,2026-04-11T22:45:00,BH_EHR_B
+B:B-P0007:B-P0007-E02:OBS1:assessment_datetime,B,B-P0007,B-P0007-E02,OBS1,assessment,assessment_datetime,2026-04-11T23:05:00,,routine,EMER,2026-04-11T22:45:00,BH_EHR_B
+B:B-P0008:B-P0008-E01:ENC:encounter_class,B,B-P0008,B-P0008-E01,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-04-02T10:15:00,BH_EHR_B
+B:B-P0008:B-P0008-E01:ENC:encounter_datetime,B,B-P0008,B-P0008-E01,ENC,encounter,encounter_datetime,2026-04-02T10:15:00,,routine,AMB,2026-04-02T10:15:00,BH_EHR_B
+B:B-P0008:B-P0008-E01:DX1:diagnosis_code,B,B-P0008,B-P0008-E01,DX1,diagnosis,diagnosis_code,F43.10,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-04-02T10:15:00,BH_EHR_B
+B:B-P0008:B-P0008-E01:DX1:diagnosis_display,B,B-P0008,B-P0008-E01,DX1,diagnosis,diagnosis_display,"Post-traumatic stress disorder, unspecified",,routine,AMB,2026-04-02T10:15:00,BH_EHR_B
+B:B-P0008:B-P0008-E01:DX1:diagnosis_onset,B,B-P0008,B-P0008-E01,DX1,diagnosis,diagnosis_onset,2025-04-21,,routine,AMB,2026-04-02T10:15:00,BH_EHR_B
+B:B-P0008:B-P0008-E01:OBS1:assessment_code,B,B-P0008,B-P0008-E01,OBS1,assessment,assessment_code,44249-1,http://loinc.org,routine,AMB,2026-04-02T10:15:00,BH_EHR_B
+B:B-P0008:B-P0008-E01:OBS1:assessment_score,B,B-P0008,B-P0008-E01,OBS1,assessment,assessment_score,15,,routine,AMB,2026-04-02T10:15:00,BH_EHR_B
+B:B-P0008:B-P0008-E01:OBS1:assessment_datetime,B,B-P0008,B-P0008-E01,OBS1,assessment,assessment_datetime,2026-04-02T10:25:00,,routine,AMB,2026-04-02T10:15:00,BH_EHR_B
+B:B-P0009:B-P0009-E01:ENC:encounter_class,B,B-P0009,B-P0009-E01,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-04-02T14:15:00,BH_EHR_B
+B:B-P0009:B-P0009-E01:ENC:encounter_datetime,B,B-P0009,B-P0009-E01,ENC,encounter,encounter_datetime,2026-04-02T14:15:00,,routine,AMB,2026-04-02T14:15:00,BH_EHR_B
+B:B-P0009:B-P0009-E01:DX1:diagnosis_code,B,B-P0009,B-P0009-E01,DX1,diagnosis,diagnosis_code,F43.10,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-04-02T14:15:00,BH_EHR_B
+B:B-P0009:B-P0009-E01:DX1:diagnosis_display,B,B-P0009,B-P0009-E01,DX1,diagnosis,diagnosis_display,"Post-traumatic stress disorder, unspecified",,routine,AMB,2026-04-02T14:15:00,BH_EHR_B
+B:B-P0009:B-P0009-E01:DX1:diagnosis_onset,B,B-P0009,B-P0009-E01,DX1,diagnosis,diagnosis_onset,2025-05-22,,routine,AMB,2026-04-02T14:15:00,BH_EHR_B
+B:B-P0009:B-P0009-E01:MED1:medication_code,B,B-P0009,B-P0009-E01,MED1,medication,medication_code,310385,http://www.nlm.nih.gov/research/umls/rxnorm,routine,AMB,2026-04-02T14:15:00,BH_EHR_B
+B:B-P0009:B-P0009-E01:MED1:medication_dose,B,B-P0009,B-P0009-E01,MED1,medication,medication_dose,20 mg,,routine,AMB,2026-04-02T14:15:00,BH_EHR_B
+B:B-P0009:B-P0009-E01:MED1:medication_frequency,B,B-P0009,B-P0009-E01,MED1,medication,medication_frequency,daily,http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation,routine,AMB,2026-04-02T14:15:00,BH_EHR_B
+B:B-P0010:B-P0010-E01:ENC:encounter_class,B,B-P0010,B-P0010-E01,ENC,encounter,encounter_class,AMB,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,AMB,2026-04-03T11:15:00,BH_EHR_B
+B:B-P0010:B-P0010-E01:ENC:encounter_datetime,B,B-P0010,B-P0010-E01,ENC,encounter,encounter_datetime,2026-04-03T11:15:00,,routine,AMB,2026-04-03T11:15:00,BH_EHR_B
+B:B-P0010:B-P0010-E01:DX1:diagnosis_code,B,B-P0010,B-P0010-E01,DX1,diagnosis,diagnosis_code,F41.1,http://hl7.org/fhir/sid/icd-10-cm,routine,AMB,2026-04-03T11:15:00,BH_EHR_B
+B:B-P0010:B-P0010-E01:DX1:diagnosis_display,B,B-P0010,B-P0010-E01,DX1,diagnosis,diagnosis_display,Generalized anxiety disorder,,routine,AMB,2026-04-03T11:15:00,BH_EHR_B
+B:B-P0010:B-P0010-E01:DX1:diagnosis_onset,B,B-P0010,B-P0010-E01,DX1,diagnosis,diagnosis_onset,2024-02-11,,routine,AMB,2026-04-03T11:15:00,BH_EHR_B
+B:B-P0010:B-P0010-E01:OBS1:assessment_code,B,B-P0010,B-P0010-E01,OBS1,assessment,assessment_code,70274-6,http://loinc.org,routine,AMB,2026-04-03T11:15:00,BH_EHR_B
+B:B-P0010:B-P0010-E01:OBS1:assessment_score,B,B-P0010,B-P0010-E01,OBS1,assessment,assessment_score,15,,routine,AMB,2026-04-03T11:15:00,BH_EHR_B
+B:B-P0010:B-P0010-E01:OBS1:assessment_datetime,B,B-P0010,B-P0010-E01,OBS1,assessment,assessment_datetime,2026-04-03T11:35:00,,routine,AMB,2026-04-03T11:15:00,BH_EHR_B
+B:B-P0010:B-P0010-E02:ENC:encounter_class,B,B-P0010,B-P0010-E02,ENC,encounter,encounter_class,EMER,http://terminology.hl7.org/CodeSystem/v3-ActCode,routine,EMER,2026-04-23T19:30:00,BH_EHR_B
+B:B-P0010:B-P0010-E02:ENC:encounter_datetime,B,B-P0010,B-P0010-E02,ENC,encounter,encounter_datetime,2026-04-23T19:30:00,,routine,EMER,2026-04-23T19:30:00,BH_EHR_B
+B:B-P0010:B-P0010-E02:DX1:diagnosis_code,B,B-P0010,B-P0010-E02,DX1,diagnosis,diagnosis_code,F41.1,http://hl7.org/fhir/sid/icd-10-cm,routine,EMER,2026-04-23T19:30:00,BH_EHR_B
+B:B-P0010:B-P0010-E02:DX1:diagnosis_display,B,B-P0010,B-P0010-E02,DX1,diagnosis,diagnosis_display,Generalized anxiety disorder,,routine,EMER,2026-04-23T19:30:00,BH_EHR_B
+B:B-P0010:B-P0010-E02:DX1:diagnosis_onset,B,B-P0010,B-P0010-E02,DX1,diagnosis,diagnosis_onset,2024-04-04,,routine,EMER,2026-04-23T19:30:00,BH_EHR_B
+B:B-P0010:B-P0010-E02:OBS1:assessment_code,B,B-P0010,B-P0010-E02,OBS1,assessment,assessment_code,70274-6,http://loinc.org,routine,EMER,2026-04-23T19:30:00,BH_EHR_B
+B:B-P0010:B-P0010-E02:OBS1:assessment_score,B,B-P0010,B-P0010-E02,OBS1,assessment,assessment_score,19,,routine,EMER,2026-04-23T19:30:00,BH_EHR_B
+B:B-P0010:B-P0010-E02:OBS1:assessment_datetime,B,B-P0010,B-P0010-E02,OBS1,assessment,assessment_datetime,2026-04-23T19:40:00,,routine,EMER,2026-04-23T19:30:00,BH_EHR_B

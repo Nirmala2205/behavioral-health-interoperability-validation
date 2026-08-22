@@ -1,0 +1,57 @@
+# =============================================================================
+# ADVERSARIAL PROFILE  --  measuring the framework's known blind spots
+# =============================================================================
+# Every other profile in this directory injects failures the framework was
+# designed to catch. Running only those produces a flattering result that says
+# little: of course a detector finds the failures its own author anticipated.
+#
+# This profile does the opposite. It injects a failure that is real, clinically
+# meaningful, and that the framework is KNOWN to classify incorrectly, so the
+# limitation appears as a number in the evaluation output instead of a caveat
+# in the README.
+#
+# The case: a diagnosis code degrades to its ICD-10-CM category-level ancestor
+# (F32.1 -> F32). That is unambiguously a loss of specificity and should be
+# reported as semantic_degraded. But the relationship is not in the
+# hand-curated config/code_equivalence.yaml, so the engine has no documented
+# basis for calling it a degradation and falls back to value_mismatch.
+#
+# What the run should show:
+#   detection sensitivity       100%  -- the failure IS caught
+#   classification sensitivity  lower -- it is caught under the wrong name
+#
+# That is the honest characterization of a curated-terminology approach: it
+# does not miss things, it mislabels the things outside its curation. The
+# practical implication -- that a production version would need to derive
+# equivalence from the ICD-10-CM hierarchy and RxNorm graph rather than a YAML
+# file -- follows from the measurement rather than from an opinion.
+#
+# Run with:
+#     python src/run_pipeline.py --scenarios A --profile blindspots
+# =============================================================================
+
+profile_id: "blindspots"
+mode: fixed
+random_seed: 990211
+
+fixed_counts:
+
+  - failure_type: degrade_code_uncurated
+    count: 5
+    expected_detection: semantic_degraded
+    description: >-
+      Real broadening to an ICD-10-CM category ancestor absent from the curated
+      map. Expected to be detected but misclassified as value_mismatch.
+
+  # A curated degradation is injected alongside as the control. Both are the
+  # same kind of clinical event; only the curation coverage differs. Running
+  # them in one profile makes the comparison direct rather than requiring the
+  # reader to compare two runs.
+  - failure_type: degrade_code
+    count: 5
+    expected_detection: semantic_degraded
+    targets:
+      element_names: [diagnosis_code, medication_code]
+    description: >-
+      CONTROL: the same class of degradation, but covered by the curated map.
+      Expected to be classified correctly.

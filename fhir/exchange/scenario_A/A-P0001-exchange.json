@@ -1,0 +1,291 @@
+{
+  "resourceType": "Bundle",
+  "id": "A-P0001-exchange",
+  "meta": {
+    "tag": [
+      {
+        "system": "urn:bhiv:synthetic",
+        "code": "SYNTHETIC",
+        "display": "Synthetic data. Not real patient information."
+      }
+    ],
+    "profile": []
+  },
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "A-P0001",
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:bhiv:synthetic",
+              "code": "SYNTHETIC",
+              "display": "Synthetic record. Not a real person. No PHI."
+            }
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:bhiv:patient",
+            "value": "A-P0001"
+          }
+        ],
+        "active": true,
+        "extension": [
+          {
+            "url": "urn:bhiv:consent-state",
+            "valueString": "part2_restricted"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Consent",
+        "id": "A-P0001-consent",
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "patient-privacy"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                "code": "IDSCL",
+                "display": "information disclosure"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/A-P0001"
+        },
+        "policyRule": {
+          "text": "Simplified synthetic consent model. Authorizes sensitivity classes: routine. Not a compliance artifact."
+        },
+        "provision": {
+          "type": "permit",
+          "securityLabel": [
+            {
+              "system": "urn:bhiv:sensitivity",
+              "code": "routine"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "A-P0001-E01",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "subject": {
+          "reference": "Patient/A-P0001"
+        },
+        "period": {
+          "start": "2026-04-07T13:30:00"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "A-P0001-E02-DX1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F41.1",
+              "display": "Generalized anxiety disorder"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/A-P0001"
+        },
+        "encounter": {
+          "reference": "Encounter/A-P0001-E02"
+        },
+        "onsetDateTime": "2024-07-28"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "A-P0001-E02",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "subject": {
+          "reference": "Patient/A-P0001"
+        },
+        "period": {
+          "start": "2026-04-18T19:30:00"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "A-P0001-E02-OBS1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "70274-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/A-P0001"
+        },
+        "encounter": {
+          "reference": "Encounter/A-P0001-E02"
+        },
+        "effectiveDateTime": "2026-04-18T19:40:00",
+        "valueQuantity": {
+          "value": 9.0,
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "A-P0001-E03-DX1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F41.1",
+              "display": "Generalized anxiety disorder"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/A-P0001"
+        },
+        "encounter": {
+          "reference": "Encounter/A-P0001-E03"
+        },
+        "onsetDateTime": "2026-02-17"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "A-P0001-E03",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "subject": {
+          "reference": "Patient/A-P0001"
+        },
+        "period": {
+          "start": "2026-05-03T23:15:00"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "A-P0001-E03-OBS1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "70274-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/A-P0001"
+        },
+        "encounter": {
+          "reference": "Encounter/A-P0001-E03"
+        },
+        "effectiveDateTime": "2026-05-03T23:25:00",
+        "valueQuantity": {
+          "value": 12.0,
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        }
+      }
+    }
+  ]
+}

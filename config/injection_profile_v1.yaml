@@ -1,0 +1,173 @@
+# =============================================================================
+# FAILURE INJECTION PROFILE  --  V1 micro-prototype
+# =============================================================================
+# Blueprint Section 13: "Controlled error injection is what turns the project
+# from a dashboard into an evaluable prototype."
+#
+# Two injection modes are supported:
+#
+#   mode: fixed        Inject an exact count of each failure type. Used for the
+#                      10-patient micro-prototype, where the point is to prove
+#                      every rule fires correctly at least once -- not to
+#                      simulate realistic prevalence.
+#
+#   mode: probabilistic  Inject each failure type at a per-eligible-element
+#                      probability. Used for the Stage B scaled benchmark.
+#
+# CRITICAL: injection rates here are experimental parameters chosen to exercise
+# the detector. They are NOT estimates of how often these failures occur in
+# real health information exchange, and results must never be presented as
+# such. Blueprint Section 5: "Will not do -- use synthetic results as estimates
+# of real national failure rates."
+# =============================================================================
+
+profile_id: "v1_micro"
+mode: fixed
+random_seed: 771026
+
+# -----------------------------------------------------------------------------
+# Fixed-count injections (micro-prototype)
+# -----------------------------------------------------------------------------
+# Each entry names a failure the injector knows how to create, how many to
+# create, and what the detector is expected to emit. That last field is the
+# reference standard: the evaluation layer scores the detector against
+# expected_detection, not against a human's later interpretation of the run.
+# -----------------------------------------------------------------------------
+fixed_counts:
+
+  # --- Completeness ---------------------------------------------------------
+  - failure_type: drop_required_element
+    count: 3
+    expected_detection: missing_element
+    targets:
+      required_only: true
+      exclude_groups: []
+    description: >-
+      Delete an expected, required element outright. The canonical silent
+      completeness failure -- the destination has no way to know it should
+      have received something.
+
+  # --- Fidelity -------------------------------------------------------------
+  - failure_type: drop_subfield
+    count: 2
+    expected_detection: subfield_dropped
+    targets:
+      required_only: false
+      element_names: [medication_dose, medication_frequency, diagnosis_display]
+    description: >-
+      Keep the clinical group but strip a non-required detail. Models the very
+      common partial-mapping failure where a receiving system's schema has no
+      home for a subfield.
+
+  - failure_type: alter_numeric_value
+    count: 2
+    expected_detection: value_mismatch
+    targets:
+      element_names: [assessment_score]
+    perturbation:
+      # Deliberately chosen to cross a PHQ-9 severity band boundary, so the
+      # injected error is clinically consequential rather than cosmetic.
+      mode: band_crossing
+    description: >-
+      Change a numeric assessment score. The blueprint's worked example
+      (PHQ-9 18 -> 8) is exactly this case.
+
+  # --- Semantic -------------------------------------------------------------
+  - failure_type: degrade_code
+    count: 2
+    expected_detection: semantic_degraded
+    targets:
+      element_names: [diagnosis_code, medication_code]
+    description: >-
+      Replace a code with a documented broader ancestor from
+      config/code_equivalence.yaml. Structurally valid FHIR, clinically less
+      specific -- invisible to conformance validation.
+
+  - failure_type: replace_code_incorrect
+    count: 1
+    expected_detection: value_mismatch
+    targets:
+      element_names: [diagnosis_code]
+    description: >-
+      Replace a code with an unrelated concept. Included alongside
+      degrade_code specifically to test that the framework separates the two
+      rather than lumping both under "code mismatch."
+
+  # --- Linkage --------------------------------------------------------------
+  - failure_type: relink_wrong_patient
+    count: 1
+    expected_detection: patient_linkage
+    description: >-
+      Deliver the element under a different synthetic patient's identifier.
+      The element exists at the destination; it is attached to the wrong person.
+
+  - failure_type: relink_wrong_encounter
+    count: 2
+    expected_detection: encounter_linkage
+    description: >-
+      Deliver the element under a different encounter belonging to the correct
+      patient. Present, correct value, wrong clinical context.
+
+  # --- Timeliness -----------------------------------------------------------
+  - failure_type: delay_arrival
+    count: 2
+    expected_detection: timeliness
+    targets:
+      prefer_encounter_class: EMER
+    perturbation:
+      extra_minutes: 240
+    description: >-
+      Push received_timestamp past the threshold for the encounter class.
+      Content is perfectly intact -- completeness and fidelity both pass. Only
+      a timeliness rule catches it.
+
+  # --- Consent --------------------------------------------------------------
+  - failure_type: unauthorized_disclosure
+    count: 2
+    expected_detection: unauthorized_disclosure
+    description: >-
+      Transmit an element that consent required be withheld. Note this targets
+      elements that are NOT in the expected set, so a validator that only
+      iterates the expected set will score a false negative here. Included
+      deliberately as a trap for that design mistake.
+
+  - failure_type: consent_over_restriction
+    count: 1
+    expected_detection: consent_over_restriction
+    description: >-
+      Withhold an element that WAS authorized, as a faulty restriction rule
+      would. Indistinguishable from missing_element at the destination; the
+      framework separates them using the patient's actual consent state.
+
+  # --- Correct behavior (must NOT be flagged) -------------------------------
+  - failure_type: correct_consent_exclusion
+    count: 3
+    expected_detection: none
+    description: >-
+      Not a failure at all. A restricted element is correctly withheld. These
+      are injected as negative controls: if the framework flags any of them,
+      that is a false positive, and Blueprint Section 19 makes distinguishing
+      these from true missing data a condition of project success.
+
+# -----------------------------------------------------------------------------
+# Probabilistic rates (Stage B scaled benchmark)
+# -----------------------------------------------------------------------------
+# Applied per eligible element when mode: probabilistic. Kept low enough that
+# most of the dataset is clean, so specificity/false-positive rate is
+# measurable against a large true-negative population.
+# -----------------------------------------------------------------------------
+probabilistic_rates:
+  drop_required_element: 0.020
+  drop_subfield: 0.020
+  alter_numeric_value: 0.030
+  degrade_code: 0.025
+  replace_code_incorrect: 0.010
+  relink_wrong_patient: 0.005
+  relink_wrong_encounter: 0.010
+  delay_arrival: 0.020
+  unauthorized_disclosure: 0.030
+  consent_over_restriction: 0.015
+  # Negative controls at scale: correctly-withheld elements explicitly labelled
+  # as "must not be flagged", so specificity is measured against a labelled
+  # population rather than only against untouched elements.
+  correct_consent_exclusion: 0.020

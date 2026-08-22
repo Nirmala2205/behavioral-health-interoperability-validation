@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Power BI working files
+*.pbix.tmp
+~$*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# NOTE: data/, fhir/, and outputs/ ARE committed on purpose.
+# They are synthetic, contain no PHI, and are small. Committing them means a
+# reviewer can inspect the results without installing or running anything --
+# which for a portfolio project is most of the audience.

@@ -1,0 +1,372 @@
+{
+  "resourceType": "Bundle",
+  "id": "B-P0005-exchange",
+  "meta": {
+    "tag": [
+      {
+        "system": "urn:bhiv:synthetic",
+        "code": "SYNTHETIC",
+        "display": "Synthetic data. Not real patient information."
+      }
+    ],
+    "profile": []
+  },
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "B-P0005",
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:bhiv:synthetic",
+              "code": "SYNTHETIC",
+              "display": "Synthetic record. Not a real person. No PHI."
+            }
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:bhiv:patient",
+            "value": "B-P0005"
+          }
+        ],
+        "active": true,
+        "extension": [
+          {
+            "url": "urn:bhiv:consent-state",
+            "valueString": "authorized_all"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Consent",
+        "id": "B-P0005-consent",
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "patient-privacy"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                "code": "IDSCL",
+                "display": "information disclosure"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/B-P0005"
+        },
+        "policyRule": {
+          "text": "Simplified synthetic consent model. Authorizes sensitivity classes: routine, sud_part2. Not a compliance artifact."
+        },
+        "provision": {
+          "type": "permit",
+          "securityLabel": [
+            {
+              "system": "urn:bhiv:sensitivity",
+              "code": "routine"
+            },
+            {
+              "system": "urn:bhiv:sensitivity",
+              "code": "sud_part2"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "B-P0005-E01-DX1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F41.1",
+              "display": "Generalized anxiety disorder"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/B-P0005"
+        },
+        "encounter": {
+          "reference": "Encounter/B-P0005-E01"
+        },
+        "onsetDateTime": "2025-11-07"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "B-P0005-E01",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "subject": {
+          "reference": "Patient/B-P0005"
+        },
+        "period": {
+          "start": "2026-04-21T16:45:00"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "B-P0005-E01-MED1",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "312940"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/B-P0005"
+        },
+        "encounter": {
+          "reference": "Encounter/B-P0005-E01"
+        },
+        "dosageInstruction": [
+          {
+            "text": "50 mg daily",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 50.0,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ],
+            "timing": {
+              "code": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation",
+                    "code": "daily"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "B-P0005-E01-OBS1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "70274-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/B-P0005"
+        },
+        "encounter": {
+          "reference": "Encounter/B-P0005-E01"
+        },
+        "effectiveDateTime": "2026-04-21T17:05:00",
+        "valueQuantity": {
+          "value": 11.0,
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "B-P0005-E02-DX1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F10.20",
+              "display": "Alcohol dependence, uncomplicated"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/B-P0005"
+        },
+        "encounter": {
+          "reference": "Encounter/B-P0005-E02"
+        },
+        "onsetDateTime": "2025-09-05"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "B-P0005-E02",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "subject": {
+          "reference": "Patient/B-P0005"
+        },
+        "period": {
+          "start": "2026-05-15T19:45:00"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "B-P0005-E02-MED1",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1116442"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/B-P0005"
+        },
+        "encounter": {
+          "reference": "Encounter/B-P0005-E02"
+        },
+        "dosageInstruction": [
+          {
+            "text": "380 mg monthly",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 380.0,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ],
+            "timing": {
+              "code": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation",
+                    "code": "monthly"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "B-P0005-E02-OBS1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "44249-1"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/B-P0005"
+        },
+        "encounter": {
+          "reference": "Encounter/B-P0005-E02"
+        },
+        "effectiveDateTime": "2026-05-15T19:55:00",
+        "valueQuantity": {
+          "value": 20.0,
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        }
+      }
+    }
+  ]
+}

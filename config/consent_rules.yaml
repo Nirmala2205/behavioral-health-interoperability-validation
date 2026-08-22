@@ -1,0 +1,89 @@
+# =============================================================================
+# CONSENT / AUTHORIZATION RULES
+# =============================================================================
+# This file is what turns "SOURCE vs DESTINATION" into the correct comparison,
+# which Blueprint Section 11 states is:
+#
+#     SOURCE TRUTH -> EXPECTED/AUTHORIZED EXCHANGE -> RECEIVED -> VALIDATION
+#
+# Without a consent layer, a framework that compares source directly to
+# destination will report every lawfully withheld 42 CFR Part 2 element as
+# missing data. That is not a subtle inaccuracy -- in behavioral health it is
+# the single most likely way a naive data-quality tool produces a wrong answer,
+# because correct privacy behavior and data loss look identical downstream.
+#
+# IMPORTANT SCOPE NOTE: this is a simplified research model of consent, not a
+# compliance implementation. Real 42 CFR Part 2 behavior is jurisdiction-,
+# organization-, and workflow-specific (see CRISP's Consent Tool for what an
+# operational version looks like). Modeling real consent workflows is named as
+# future work in docs/methodology/methodology_note.md.
+# =============================================================================
+
+consent_states:
+
+  authorized_all:
+    description: >-
+      Patient has authorized disclosure of all treatment information, including
+      any Part 2 SUD records, to the receiving organization.
+    authorizes_sensitivity_classes:
+      - routine
+      - sud_part2
+
+  part2_restricted:
+    description: >-
+      Standard treatment disclosure is authorized, but the patient has not
+      consented to redisclosure of substance-use-disorder treatment records.
+      Part 2 elements must be withheld.
+    authorizes_sensitivity_classes:
+      - routine
+
+  fully_restricted:
+    description: >-
+      Patient has restricted disclosure entirely for this exchange partner.
+      Nothing is expected to move; an empty destination is the CORRECT result.
+      Included to prove the framework does not report a 0% completeness
+      failure when zero elements were authorized in the first place -- the
+      completeness denominator for such a patient is zero, and a zero
+      denominator must be reported as "not applicable", never as 0%.
+    authorizes_sensitivity_classes: []
+
+# -----------------------------------------------------------------------------
+# Which sensitivity class each clinical concept carries.
+# -----------------------------------------------------------------------------
+# Assignment is by diagnosis code family and by medication, mirroring how a real
+# Part 2 segmentation rule would key off the originating program and concept.
+# -----------------------------------------------------------------------------
+sensitivity_assignment:
+
+  diagnosis_code_prefixes:
+    sud_part2:
+      - "F10"   # alcohol-related disorders
+      - "F11"   # opioid-related disorders
+      - "F12"   # cannabis-related disorders
+      - "F14"   # cocaine-related disorders
+      - "F19"   # other psychoactive substance-related disorders
+    routine_default: true   # anything not matched above is routine
+
+  medication_rxnorm_codes:
+    sud_part2:
+      - "1010600"   # buprenorphine / naloxone sublingual film
+      - "1116442"   # naltrexone extended-release injectable
+    routine_default: true
+
+# -----------------------------------------------------------------------------
+# Propagation rule
+# -----------------------------------------------------------------------------
+# A sensitivity class attaches to a clinical GROUP (one diagnosis, one
+# medication order, one assessment), not to an individual field. If a diagnosis
+# is Part 2, then its code, display, and onset are all Part 2 -- withholding
+# the code but exchanging the display "Alcohol use disorder, moderate" would
+# disclose exactly what the restriction exists to protect.
+#
+# The encounter group itself is always routine: that an encounter occurred is
+# exchanged, while what happened in it may be restricted. This mirrors the
+# common real-world pattern of masking sensitive content while preserving the
+# care-coordination signal that a visit took place.
+# -----------------------------------------------------------------------------
+propagation:
+  unit: element_group
+  encounter_group_always_routine: true

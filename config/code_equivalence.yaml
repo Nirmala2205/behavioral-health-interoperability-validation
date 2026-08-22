@@ -1,0 +1,175 @@
+# =============================================================================
+# CODE EQUIVALENCE MAP  --  the basis of the semantic-preservation dimension
+# =============================================================================
+# Blueprint Section 21 flags terminology equivalence as a named risk: "Semantic
+# preservation requires careful equivalence rules and potentially standardized
+# vocabularies," with the stated response to "start with a small set of known
+# code mappings; document exact rules." This file is that small documented set.
+#
+# It answers one question per code pair: if the destination has code X where
+# code Y was expected, is that
+#
+#   (a) the same concept expressed differently        -> equivalent, PASS
+#   (b) a less specific ancestor of the expected code -> semantic_degraded, FAIL
+#   (c) an unrelated concept                          -> value_mismatch, FAIL
+#
+# Case (b) is the one that matters. A framework without an equivalence map
+# cannot distinguish "we lost some clinical specificity" from "we got the wrong
+# diagnosis," and those two findings warrant completely different responses
+# from a receiving organization.
+#
+# HONEST LIMITATION: these relationships are hand-curated for a small V1
+# vocabulary. A production or dissertation-scale version would derive them from
+# the actual ICD-10-CM hierarchy and RxNorm relationship graph (via UMLS or the
+# RxNav API) rather than a YAML file. Hand-curation is defensible at 10-patient
+# scale precisely because it is auditable; it does not scale, and the
+# limitations doc says so.
+# =============================================================================
+
+systems:
+
+  # ---------------------------------------------------------------------------
+  # ICD-10-CM
+  # ---------------------------------------------------------------------------
+  # "broader" lists codes that are genuine ancestors or less-specific siblings
+  # within the same category -- clinical meaning is partially retained.
+  # ---------------------------------------------------------------------------
+  "http://hl7.org/fhir/sid/icd-10-cm":
+
+    "F32.1":                      # MDD, single episode, moderate
+      display: "Major depressive disorder, single episode, moderate"
+      broader:
+        - "F32.9"                 # MDD, single episode, unspecified
+        - "F32.A"                 # Depression, unspecified
+        - "F39"                   # Unspecified mood [affective] disorder
+      equivalent: []
+
+    "F33.1":                      # MDD, recurrent, moderate
+      display: "Major depressive disorder, recurrent, moderate"
+      broader:
+        - "F33.9"                 # MDD, recurrent, unspecified
+        - "F39"
+      equivalent: []
+
+    "F41.1":                      # Generalized anxiety disorder
+      display: "Generalized anxiety disorder"
+      broader:
+        - "F41.9"                 # Anxiety disorder, unspecified
+      equivalent: []
+
+    "F43.10":                     # PTSD, unspecified
+      display: "Post-traumatic stress disorder, unspecified"
+      broader:
+        - "F43.9"                 # Reaction to severe stress, unspecified
+      equivalent: []
+
+    "F10.20":                     # Alcohol dependence, uncomplicated
+      display: "Alcohol dependence, uncomplicated"
+      broader:
+        - "F10.90"                # Alcohol use, unspecified, uncomplicated
+        - "F19.20"                # Other psychoactive substance dependence
+      equivalent: []
+
+    "F11.20":                     # Opioid dependence, uncomplicated
+      display: "Opioid dependence, uncomplicated"
+      broader:
+        - "F11.90"                # Opioid use, unspecified, uncomplicated
+        - "F19.20"
+      equivalent: []
+
+    "F31.32":                     # Bipolar I, current episode depressed, moderate
+      display: "Bipolar disorder, current episode depressed, moderate"
+      broader:
+        - "F31.9"                 # Bipolar disorder, unspecified
+        - "F39"
+      equivalent: []
+
+  # ---------------------------------------------------------------------------
+  # RxNorm
+  # ---------------------------------------------------------------------------
+  # The characteristic RxNorm degradation is SCD (specific clinical drug, with
+  # strength and dose form) collapsing to IN (ingredient only).
+  # ---------------------------------------------------------------------------
+  "http://www.nlm.nih.gov/research/umls/rxnorm":
+
+    "312940":                     # sertraline 50 MG oral tablet  (SCD)
+      display: "Sertraline 50 MG Oral Tablet"
+      broader:
+        - "36437"                 # sertraline                     (IN)
+      equivalent: []
+
+    "310385":                     # fluoxetine 20 MG oral capsule  (SCD)
+      display: "Fluoxetine 20 MG Oral Capsule"
+      broader:
+        - "4493"                  # fluoxetine                     (IN)
+      equivalent: []
+
+    "856706":                     # venlafaxine ER 75 MG           (SCD)
+      display: "Venlafaxine Hydrochloride 75 MG Extended Release Oral Tablet"
+      broader:
+        - "39786"                 # venlafaxine                    (IN)
+      equivalent: []
+
+    "1010600":                    # buprenorphine/naloxone film    (SCD)
+      display: "Buprenorphine 8 MG / Naloxone 2 MG Sublingual Film"
+      broader:
+        - "1010600_IN"            # synthetic placeholder ingredient concept
+      equivalent: []
+
+    "1116442":                    # naltrexone ER injectable       (SCD)
+      display: "Naltrexone 380 MG Injection"
+      broader:
+        - "7243"                  # naltrexone                     (IN)
+      equivalent: []
+
+# -----------------------------------------------------------------------------
+# Unit equivalence for dose comparison
+# -----------------------------------------------------------------------------
+# Everything is converted to milligrams before comparison so that a unit
+# rendering difference is never reported as a dose change.
+# -----------------------------------------------------------------------------
+unit_conversion_to_mg:
+  mg: 1.0
+  milligram: 1.0
+  g: 1000.0
+  gram: 1000.0
+  mcg: 0.001
+  microgram: 0.001
+  ug: 0.001
+
+# -----------------------------------------------------------------------------
+# Frequency normalization
+# -----------------------------------------------------------------------------
+# Maps the many surface renderings of a dosing frequency onto canonical HL7
+# GTS timing abbreviations, so that "daily", "once daily", and "QD" all compare
+# equal. Anything unmapped is preserved verbatim and flagged by the
+# normalizer, rather than silently coerced -- silent coercion in a data-quality
+# tool is how false negatives are born.
+# -----------------------------------------------------------------------------
+frequency_synonyms:
+  QD:
+    - "daily"
+    - "once daily"
+    - "qd"
+    - "q.d."
+    - "every day"
+    - "1x daily"
+  BID:
+    - "twice daily"
+    - "bid"
+    - "b.i.d."
+    - "two times a day"
+    - "2x daily"
+  TID:
+    - "three times daily"
+    - "tid"
+    - "t.i.d."
+    - "3x daily"
+  QHS:
+    - "at bedtime"
+    - "qhs"
+    - "nightly"
+  QMONTH:
+    - "monthly"
+    - "once monthly"
+    - "every 4 weeks"

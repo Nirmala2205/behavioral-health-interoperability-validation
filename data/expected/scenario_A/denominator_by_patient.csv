@@ -1,0 +1,11 @@
+scenario_id,patient_id,consent_state,total_source_elements,expected_elements,excluded_by_consent,denominator_defined
+A,A-P0001,part2_restricted,24,18,6,True
+A,A-P0002,authorized_all,21,21,0,True
+A,A-P0003,authorized_all,16,16,0,True
+A,A-P0004,authorized_all,30,30,0,True
+A,A-P0005,authorized_all,5,5,0,True
+A,A-P0006,authorized_all,24,24,0,True
+A,A-P0007,part2_restricted,8,8,0,True
+A,A-P0008,authorized_all,8,8,0,True
+A,A-P0009,part2_restricted,27,27,0,True
+A,A-P0010,fully_restricted,21,0,21,False

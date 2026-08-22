@@ -1,0 +1,6 @@
+# V1 dependencies. Deliberately minimal -- every added dependency is another
+# thing that can break reproducibility on someone else's machine.
+pandas>=2.0
+duckdb>=0.10
+PyYAML>=6.0
+pytest>=7.4

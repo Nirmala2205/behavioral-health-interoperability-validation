@@ -1,0 +1,190 @@
+{
+  "resourceType": "Bundle",
+  "id": "B-P0009-exchange",
+  "meta": {
+    "tag": [
+      {
+        "system": "urn:bhiv:synthetic",
+        "code": "SYNTHETIC",
+        "display": "Synthetic data. Not real patient information."
+      }
+    ],
+    "profile": []
+  },
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "B-P0009",
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:bhiv:synthetic",
+              "code": "SYNTHETIC",
+              "display": "Synthetic record. Not a real person. No PHI."
+            }
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:bhiv:patient",
+            "value": "B-P0009"
+          }
+        ],
+        "active": true,
+        "extension": [
+          {
+            "url": "urn:bhiv:consent-state",
+            "valueString": "part2_restricted"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Consent",
+        "id": "B-P0009-consent",
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "patient-privacy"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                "code": "IDSCL",
+                "display": "information disclosure"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/B-P0009"
+        },
+        "policyRule": {
+          "text": "Simplified synthetic consent model. Authorizes sensitivity classes: routine. Not a compliance artifact."
+        },
+        "provision": {
+          "type": "permit",
+          "securityLabel": [
+            {
+              "system": "urn:bhiv:sensitivity",
+              "code": "routine"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "B-P0009-E01-DX1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F43.10",
+              "display": "Post-traumatic stress disorder, unspecified"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/B-P0009"
+        },
+        "encounter": {
+          "reference": "Encounter/B-P0009-E01"
+        },
+        "onsetDateTime": "2025-05-22"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "B-P0009-E01",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "subject": {
+          "reference": "Patient/B-P0009"
+        },
+        "period": {
+          "start": "2026-04-02T14:15:00"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "B-P0009-E01-MED1",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "310385"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/B-P0009"
+        },
+        "encounter": {
+          "reference": "Encounter/B-P0009-E01"
+        },
+        "dosageInstruction": [
+          {
+            "text": "20 mg daily",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 20.0,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ],
+            "timing": {
+              "code": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation",
+                    "code": "daily"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

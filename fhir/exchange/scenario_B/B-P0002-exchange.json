@@ -1,0 +1,180 @@
+{
+  "resourceType": "Bundle",
+  "id": "B-P0002-exchange",
+  "meta": {
+    "tag": [
+      {
+        "system": "urn:bhiv:synthetic",
+        "code": "SYNTHETIC",
+        "display": "Synthetic data. Not real patient information."
+      }
+    ],
+    "profile": []
+  },
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "B-P0002",
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:bhiv:synthetic",
+              "code": "SYNTHETIC",
+              "display": "Synthetic record. Not a real person. No PHI."
+            }
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:bhiv:patient",
+            "value": "B-P0002"
+          }
+        ],
+        "active": true,
+        "extension": [
+          {
+            "url": "urn:bhiv:consent-state",
+            "valueString": "part2_restricted"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Consent",
+        "id": "B-P0002-consent",
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "patient-privacy"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                "code": "IDSCL",
+                "display": "information disclosure"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/B-P0002"
+        },
+        "policyRule": {
+          "text": "Simplified synthetic consent model. Authorizes sensitivity classes: routine. Not a compliance artifact."
+        },
+        "provision": {
+          "type": "permit",
+          "securityLabel": [
+            {
+              "system": "urn:bhiv:sensitivity",
+              "code": "routine"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "B-P0002-E01-DX1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F31.32",
+              "display": "Bipolar disorder, current episode depressed, moderate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/B-P0002"
+        },
+        "encounter": {
+          "reference": "Encounter/B-P0002-E01"
+        },
+        "onsetDateTime": "2025-08-18"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "B-P0002-E01",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "subject": {
+          "reference": "Patient/B-P0002"
+        },
+        "period": {
+          "start": "2026-03-30T10:45:00"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "B-P0002-E01-OBS1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "44249-1"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/B-P0002"
+        },
+        "encounter": {
+          "reference": "Encounter/B-P0002-E01"
+        },
+        "effectiveDateTime": "2026-03-30T10:55:00",
+        "valueQuantity": {
+          "value": 20.0,
+          "system": "http://unitsofmeasure.org",
+          "code": "{score}"
+        }
+      }
+    }
+  ]
+}

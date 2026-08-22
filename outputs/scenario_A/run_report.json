@@ -1,0 +1,53 @@
+{
+  "run_id": "A-blindspots-n10",
+  "scenario_id": "A",
+  "scenario_name": "Baseline BH EHR -> statewide HIE -> receiving health system",
+  "contract_version": "1.0.0",
+  "patients": 10,
+  "fhir_bundles_written": 9,
+  "validation": {
+    "run_id": "A-blindspots-n10",
+    "scenario_id": "A",
+    "total_source_elements": 184,
+    "total_expected_elements": 157,
+    "expected_elements_received": 157,
+    "completeness_pct": 100.0,
+    "comparable_elements": 157,
+    "comparable_elements_matched": 147,
+    "fidelity_pct": 93.63,
+    "elements_excluded_by_consent": 27,
+    "correct_authorized_exclusions": 27,
+    "unauthorized_disclosures": 0,
+    "total_failures": 10
+  },
+  "evaluation": {
+    "injected_failures": 10,
+    "negative_controls": 0,
+    "flagged_elements": 10,
+    "classification_true_positives": 5,
+    "detection_true_positives": 10,
+    "detected_but_misclassified": 5,
+    "false_negatives": 0,
+    "false_positives": 0,
+    "true_negatives": 174,
+    "classification_sensitivity_pct": 50.0,
+    "detection_sensitivity_pct": 100.0,
+    "precision_pct": 100.0,
+    "specificity_pct": 100.0,
+    "false_positive_rate_pct": 0.0,
+    "negative_controls_incorrectly_flagged": 0,
+    "negative_control_failures": [],
+    "false_positive_verdicts": {}
+  },
+  "completeness_accuracy_check": {
+    "total_expected_elements": 157,
+    "ground_truth_received": 157,
+    "ground_truth_completeness_pct": 100.0,
+    "framework_reported_completeness_pct": 100.0,
+    "agrees": true
+  },
+  "output_hashes": {
+    "validation_results": "8516be98500b06eb",
+    "failure_injections": "516d32fb8a4d078e"
+  }
+}

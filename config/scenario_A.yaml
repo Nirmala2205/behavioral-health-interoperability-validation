@@ -1,0 +1,58 @@
+# =============================================================================
+# EXCHANGE SCENARIO A  --  baseline synthetic source/destination configuration
+# =============================================================================
+# A "scenario" describes one simulated pairing of a sending organization and a
+# receiving organization: how many patients, what the source system is called,
+# how it renders its data on the wire, and what failures the exchange path
+# introduces.
+#
+# Blueprint Stage C (Section 14.3) requires "multiple simulated
+# source/destination configurations rather than one hard-coded schema."
+# Scenario A is the baseline. Scenario B is a deliberately different
+# implementation of the same clinical content -- if the framework's results
+# hold across both, that is evidence the method generalizes beyond one schema.
+# =============================================================================
+
+scenario_id: "A"
+scenario_name: "Baseline BH EHR -> statewide HIE -> receiving health system"
+description: >-
+  A behavioral-health-specialty EHR sending to a receiving system through an
+  intermediary exchange. Renders codes in their canonical form and frequency as
+  free text -- the common case.
+
+source_system: "BH_EHR_A"
+destination_system: "RECEIVER_A"
+
+generation:
+  n_patients: 10
+  random_seed: 20260816
+  encounters_per_patient: [1, 3]        # inclusive range
+  assessments_per_encounter: [0, 2]
+  medications_per_encounter: [0, 1]
+  crisis_encounter_probability: 0.25
+  # Distribution of consent states across generated patients. Must sum to 1.0.
+  consent_state_mix:
+    authorized_all: 0.6
+    part2_restricted: 0.3
+    fully_restricted: 0.1
+
+# -----------------------------------------------------------------------------
+# Wire rendering
+# -----------------------------------------------------------------------------
+# How this scenario's source system writes values before they leave. The
+# validation engine must be immune to these surface differences -- they are
+# rendering, not data loss. Any framework that reports a finding here is
+# producing a false positive.
+# -----------------------------------------------------------------------------
+rendering:
+  frequency_style: "free_text"          # "daily", "twice daily"
+  dose_unit: "mg"
+  datetime_format: "%Y-%m-%dT%H:%M:%S"
+  code_case: "upper"
+
+# -----------------------------------------------------------------------------
+# Exchange timing
+# -----------------------------------------------------------------------------
+transmission:
+  base_latency_minutes: 5
+  latency_jitter_minutes: 10

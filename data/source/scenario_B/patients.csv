@@ -1,0 +1,11 @@
+scenario_id,patient_id,consent_state,source_system
+B,B-P0001,authorized_all,BH_EHR_B
+B,B-P0002,part2_restricted,BH_EHR_B
+B,B-P0003,authorized_all,BH_EHR_B
+B,B-P0004,authorized_all,BH_EHR_B
+B,B-P0005,authorized_all,BH_EHR_B
+B,B-P0006,part2_restricted,BH_EHR_B
+B,B-P0007,part2_restricted,BH_EHR_B
+B,B-P0008,fully_restricted,BH_EHR_B
+B,B-P0009,part2_restricted,BH_EHR_B
+B,B-P0010,authorized_all,BH_EHR_B

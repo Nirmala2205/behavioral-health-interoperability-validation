@@ -1,0 +1,12 @@
+scenario_id,element_group,element_name,comparable_elements,values_preserved,value_mismatches,semantic_degradations,fidelity_pct
+A,diagnosis,diagnosis_code,19,11.0,5.0,3.0,57.89
+A,medication,medication_code,7,5.0,0.0,2.0,71.43
+A,assessment,assessment_code,13,13.0,0.0,0.0,100.0
+A,assessment,assessment_datetime,13,13.0,0.0,0.0,100.0
+A,assessment,assessment_score,13,13.0,0.0,0.0,100.0
+A,diagnosis,diagnosis_display,19,19.0,0.0,0.0,100.0
+A,diagnosis,diagnosis_onset,19,19.0,0.0,0.0,100.0
+A,encounter,encounter_class,20,20.0,0.0,0.0,100.0
+A,encounter,encounter_datetime,20,20.0,0.0,0.0,100.0
+A,medication,medication_dose,7,7.0,0.0,0.0,100.0
+A,medication,medication_frequency,7,7.0,0.0,0.0,100.0

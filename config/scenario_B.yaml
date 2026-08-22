@@ -1,0 +1,84 @@
+# =============================================================================
+# EXCHANGE SCENARIO B  --  a different implementation of the same standard
+# =============================================================================
+# Scenario B exists to answer the generalization question in Blueprint Section
+# 15: "Cross-scenario performance -- does accuracy remain acceptable when
+# mappings/source configurations change?"
+#
+# Everything clinically meaningful is the same as Scenario A. What differs is
+# how the sending system RENDERS that content on the wire:
+#
+#   - frequency is emitted as HL7 GTS abbreviations (BID) not free text
+#   - doses are emitted in grams, not milligrams
+#   - codes are emitted lower-case
+#   - the exchange path is slower, with more jitter
+#
+# None of those differences are data-quality failures. A framework that reports
+# findings on Scenario B that it did not report on Scenario A is producing
+# false positives caused by its own rigidity -- which is precisely the failure
+# mode this scenario is designed to expose. The evaluation layer reports
+# per-scenario precision so that failure mode cannot hide.
+# =============================================================================
+
+scenario_id: "B"
+scenario_name: "Community mental health center -> regional HIE -> academic medical center"
+description: >-
+  A smaller CMHC sending through a slower regional exchange, rendering the same
+  clinical content with different unit, case, and timing conventions. Tests
+  whether the validator's normalization layer is genuinely doing its job.
+
+source_system: "BH_EHR_B"
+destination_system: "RECEIVER_B"
+
+generation:
+  n_patients: 10
+  random_seed: 20260817          # different seed -> different patients
+  encounters_per_patient: [1, 3]
+  assessments_per_encounter: [0, 2]
+  medications_per_encounter: [0, 1]
+  crisis_encounter_probability: 0.35
+  consent_state_mix:
+    authorized_all: 0.5
+    part2_restricted: 0.4
+    fully_restricted: 0.1
+
+rendering:
+  frequency_style: "gts_abbreviation"   # "QD", "BID" instead of "daily"
+  dose_unit: "g"                        # 0.05 g instead of 50 mg
+  datetime_format: "%Y-%m-%dT%H:%M:%S"
+  code_case: "lower"
+
+# -----------------------------------------------------------------------------
+# Exchange timing
+# -----------------------------------------------------------------------------
+# B models a slower regional exchange than A, but its worst case
+# (25 + 25 = 50 minutes) is deliberately held BELOW the tightest timeliness
+# threshold in the contract (60 minutes for EMER encounters).
+#
+# This is not cosmetic tuning. The evaluation layer scores the detector against
+# the injection ledger, which means the ledger has to be an EXHAUSTIVE record of
+# every true failure in the run. If a scenario's baseline latency could itself
+# breach a threshold, the run would contain true timeliness failures that were
+# never injected -- and the evaluation would score every one of them as a false
+# positive, understating the framework's precision while the framework was
+# actually correct.
+#
+# The first version of this config had base 25 + jitter 40, and that is exactly
+# what happened: four genuine late arrivals in a zero-injection run were
+# reported as false positives. The framework was right and the measurement was
+# wrong.
+#
+# Modeling an exchange path whose ordinary latency breaches a clinical window is
+# realistic and worth studying -- a regional HIE that routinely delivers crisis
+# data in 90 minutes is a real finding, not a defect. But doing it properly
+# requires a timeliness reference standard derived independently of the
+# validator's own threshold logic; deriving it from the same thresholds would
+# score the detector against itself. That is recorded as future work in
+# docs/methodology/methodology_note.md rather than fudged here.
+#
+# src/run_pipeline.py asserts this bound at startup so a future config edit
+# cannot silently reintroduce the problem.
+# -----------------------------------------------------------------------------
+transmission:
+  base_latency_minutes: 25
+  latency_jitter_minutes: 25
