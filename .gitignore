@@ -18,3 +18,5 @@ Thumbs.db
 # They are synthetic, contain no PHI, and are small. Committing them means a
 # reviewer can inspect the results without installing or running anything --
 # which for a portfolio project is most of the audience.
+# Local FHIR validator binary
+tools/validator_cli.jar
