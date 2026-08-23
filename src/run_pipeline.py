@@ -38,7 +38,8 @@ from config_loader import (load_contract, load_injection_profile, load_scenario)
 from generate.synthetic_source import generate_source_truth
 from inject_failures.injector import inject_failures
 from metrics.evaluate import completeness_accuracy, evaluate
-from transform.destination import build_wire_copy, clean_received
+from transform.destination import clean_received
+from transform.fhir_receiver import build_wire_from_fhir
 from transform.expected_exchange import build_expected_exchange, denominator_summary
 from transform.fhir_builder import build_bundles
 from validate.engine import summarize, validate
@@ -128,7 +129,7 @@ def run_scenario(scenario_id: str, args: argparse.Namespace) -> dict[str, Any]:
     bundles = build_bundles(expected, patients, bundle_dir)
 
     # --- 4. Wire copy and clean destination state --------------------------
-    wire = build_wire_copy(expected, scenario)
+    wire = build_wire_from_fhir(expected, scenario, bundle_dir)
     clean = clean_received(wire)
 
     # --- 5. Controlled failure injection -----------------------------------
