@@ -1,1 +1,10 @@
-
+expected_detection,injected,detected_correct_class,detected_wrong_class,missed,classification_sensitivity_pct,misclassified_as
+consent_over_restriction,1,1,0,0,100.0,
+encounter_linkage,2,2,0,0,100.0,
+missing_element,3,3,0,0,100.0,
+patient_linkage,1,1,0,0,100.0,
+semantic_degraded,2,2,0,0,100.0,
+subfield_dropped,2,2,0,0,100.0,
+timeliness,2,2,0,0,100.0,
+unauthorized_disclosure,2,2,0,0,100.0,
+value_mismatch,3,3,0,0,100.0,

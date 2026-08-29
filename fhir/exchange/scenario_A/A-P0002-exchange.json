@@ -14,6 +14,7 @@
   "type": "collection",
   "entry": [
     {
+      "fullUrl": "https://example.org/fhir/Patient/A-P0002",
       "resource": {
         "resourceType": "Patient",
         "id": "A-P0002",
@@ -32,16 +33,11 @@
             "value": "A-P0002"
           }
         ],
-        "active": true,
-        "extension": [
-          {
-            "url": "urn:bhiv:consent-state",
-            "valueString": "authorized_all"
-          }
-        ]
+        "active": true
       }
     },
     {
+      "fullUrl": "https://example.org/fhir/Consent/A-P0002-consent",
       "resource": {
         "resourceType": "Consent",
         "id": "A-P0002-consent",
@@ -87,6 +83,7 @@
       }
     },
     {
+      "fullUrl": "https://example.org/fhir/Condition/A-P0002-E01-DX1",
       "resource": {
         "resourceType": "Condition",
         "id": "A-P0002-E01-DX1",
@@ -127,6 +124,7 @@
       }
     },
     {
+      "fullUrl": "https://example.org/fhir/Encounter/A-P0002-E01",
       "resource": {
         "resourceType": "Encounter",
         "id": "A-P0002-E01",
@@ -139,11 +137,12 @@
           "reference": "Patient/A-P0002"
         },
         "period": {
-          "start": "2026-04-28T13:45:00"
+          "start": "2026-04-28T13:45:00+00:00"
         }
       }
     },
     {
+      "fullUrl": "https://example.org/fhir/Observation/A-P0002-E01-OBS1",
       "resource": {
         "resourceType": "Observation",
         "id": "A-P0002-E01-OBS1",
@@ -172,7 +171,7 @@
         "encounter": {
           "reference": "Encounter/A-P0002-E01"
         },
-        "effectiveDateTime": "2026-04-28T13:55:00",
+        "effectiveDateTime": "2026-04-28T13:55:00+00:00",
         "valueQuantity": {
           "value": 17.0,
           "system": "http://unitsofmeasure.org",
@@ -181,6 +180,7 @@
       }
     },
     {
+      "fullUrl": "https://example.org/fhir/Condition/A-P0002-E02-DX1",
       "resource": {
         "resourceType": "Condition",
         "id": "A-P0002-E02-DX1",
@@ -221,6 +221,7 @@
       }
     },
     {
+      "fullUrl": "https://example.org/fhir/Encounter/A-P0002-E02",
       "resource": {
         "resourceType": "Encounter",
         "id": "A-P0002-E02",
@@ -233,11 +234,12 @@
           "reference": "Patient/A-P0002"
         },
         "period": {
-          "start": "2026-05-24T16:00:00"
+          "start": "2026-05-24T16:00:00+00:00"
         }
       }
     },
     {
+      "fullUrl": "https://example.org/fhir/Observation/A-P0002-E02-OBS1",
       "resource": {
         "resourceType": "Observation",
         "id": "A-P0002-E02-OBS1",
@@ -266,7 +268,7 @@
         "encounter": {
           "reference": "Encounter/A-P0002-E02"
         },
-        "effectiveDateTime": "2026-05-24T16:10:00",
+        "effectiveDateTime": "2026-05-24T16:10:00+00:00",
         "valueQuantity": {
           "value": 19.0,
           "system": "http://unitsofmeasure.org",
@@ -275,6 +277,7 @@
       }
     },
     {
+      "fullUrl": "https://example.org/fhir/Condition/A-P0002-E03-DX1",
       "resource": {
         "resourceType": "Condition",
         "id": "A-P0002-E03-DX1",
@@ -315,6 +318,7 @@
       }
     },
     {
+      "fullUrl": "https://example.org/fhir/Encounter/A-P0002-E03",
       "resource": {
         "resourceType": "Encounter",
         "id": "A-P0002-E03",
@@ -327,7 +331,7 @@
           "reference": "Patient/A-P0002"
         },
         "period": {
-          "start": "2026-06-02T18:45:00"
+          "start": "2026-06-02T18:45:00+00:00"
         }
       }
     }

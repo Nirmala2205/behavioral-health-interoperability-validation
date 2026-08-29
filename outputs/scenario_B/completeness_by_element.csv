@@ -1,12 +1,12 @@
 scenario_id,element_group,element_name,required,expected_elements,elements_received,missing_elements,subfields_dropped,wrongly_withheld,completeness_pct
+B,medication,medication_code,True,7,5.0,1.0,0.0,1.0,71.43
+B,medication,medication_frequency,False,7,6.0,0.0,1.0,0.0,85.71
+B,diagnosis,diagnosis_code,True,17,15.0,2.0,0.0,0.0,88.24
+B,diagnosis,diagnosis_display,False,17,16.0,0.0,1.0,0.0,94.12
 B,assessment,assessment_code,True,16,16.0,0.0,0.0,0.0,100.0
 B,assessment,assessment_datetime,False,16,16.0,0.0,0.0,0.0,100.0
 B,assessment,assessment_score,True,16,16.0,0.0,0.0,0.0,100.0
-B,diagnosis,diagnosis_code,True,17,17.0,0.0,0.0,0.0,100.0
-B,diagnosis,diagnosis_display,False,17,17.0,0.0,0.0,0.0,100.0
 B,diagnosis,diagnosis_onset,False,17,17.0,0.0,0.0,0.0,100.0
 B,encounter,encounter_class,True,17,17.0,0.0,0.0,0.0,100.0
 B,encounter,encounter_datetime,True,17,17.0,0.0,0.0,0.0,100.0
-B,medication,medication_code,True,7,7.0,0.0,0.0,0.0,100.0
 B,medication,medication_dose,False,7,7.0,0.0,0.0,0.0,100.0
-B,medication,medication_frequency,False,7,7.0,0.0,0.0,0.0,100.0

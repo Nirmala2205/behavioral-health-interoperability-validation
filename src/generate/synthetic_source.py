@@ -34,7 +34,7 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import pandas as pd
@@ -97,7 +97,10 @@ MEDICATIONS: dict[str, dict[str, Any]] = {
                 "dose_mg": 380, "frequency": "monthly"},
 }
 
-STUDY_WINDOW_START = datetime(2026, 3, 2, 8, 0, 0)
+STUDY_WINDOW_START = datetime(
+    2026, 3, 2, 8, 0, 0,
+    tzinfo=timezone.utc,
+)
 
 
 # ---------------------------------------------------------------------------

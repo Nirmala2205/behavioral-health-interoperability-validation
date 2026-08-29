@@ -34,6 +34,12 @@ from typing import Any
 
 import pandas as pd
 
+
+def _full_url(resource_type: str, resource_id: str) -> str:
+    """Return a deterministic synthetic absolute URL for a FHIR resource."""
+    return f"https://example.org/fhir/{resource_type}/{resource_id}"
+
+
 FHIR_VERSION = "4.0.1"
 
 _LOINC = "http://loinc.org"
@@ -55,12 +61,11 @@ def _patient_resource(patient_id: str, consent_state: str) -> dict[str, Any]:
             "code": "SYNTHETIC",
             "display": "Synthetic record. Not a real person. No PHI.",
         }]},
-        "identifier": [{"system": "urn:bhiv:patient", "value": patient_id}],
-        "active": True,
-        "extension": [{
-            "url": "urn:bhiv:consent-state",
-            "valueString": consent_state,
+        "identifier": [{
+            "system": "urn:bhiv:patient",
+            "value": patient_id,
         }],
+        "active": True,
     }
 
 
@@ -219,7 +224,7 @@ _BUILDERS = {
 
 def build_bundles(expected: pd.DataFrame, patients: pd.DataFrame,
                   output_dir: Path) -> list[Path]:
-    """Write one FHIR R4 transaction Bundle per patient.
+    """Write one FHIR R4 collection Bundle per patient.
 
     Only authorized content is included. The bundle is the wire representation
     of what consent permitted to move -- placing restricted content in it and
@@ -232,30 +237,72 @@ def build_bundles(expected: pd.DataFrame, patients: pd.DataFrame,
     written: list[Path] = []
 
     authorized = expected[expected["authorized"]]
-    consent_by_patient = dict(zip(patients["patient_id"], patients["consent_state"]))
+    consent_by_patient = dict(
+        zip(patients["patient_id"], patients["consent_state"])
+    )
 
     for patient_id, patient_rows in authorized.groupby("patient_id"):
         consent_state = consent_by_patient[patient_id]
+
+        patient_resource = _patient_resource(
+            patient_id,
+            consent_state,
+        )
+
+        consent_resource = _consent_resource(
+            patient_id,
+            consent_state,
+            consent_rules.states.get(consent_state, []),
+        )
+
         entries: list[dict[str, Any]] = [
-            {"resource": _patient_resource(patient_id, consent_state)},
-            {"resource": _consent_resource(
-                patient_id, consent_state,
-                consent_rules.states.get(consent_state, []),
-            )},
+            {
+                "fullUrl": _full_url(
+                    patient_resource["resourceType"],
+                    patient_resource["id"],
+                ),
+                "resource": patient_resource,
+            },
+            {
+                "fullUrl": _full_url(
+                    consent_resource["resourceType"],
+                    consent_resource["id"],
+                ),
+                "resource": consent_resource,
+            },
         ]
 
         for (encounter_id, group_id), group_rows in patient_rows.groupby(
                 ["encounter_id", "group_id"], sort=True):
             element_group = group_rows["element_group"].iloc[0]
             builder = _BUILDERS.get(element_group)
+
             if builder is None:
                 continue
+
             values = _group_values(group_rows.to_dict("records"))
+
             if element_group == "encounter":
-                resource = builder(patient_id, encounter_id, values)
+                resource = builder(
+                    patient_id,
+                    encounter_id,
+                    values,
+                )
             else:
-                resource = builder(patient_id, encounter_id, group_id, values)
-            entries.append({"resource": resource})
+                resource = builder(
+                    patient_id,
+                    encounter_id,
+                    group_id,
+                    values,
+                )
+
+            entries.append({
+                "fullUrl": _full_url(
+                    resource["resourceType"],
+                    resource["id"],
+                ),
+                "resource": resource,
+            })
 
         bundle = {
             "resourceType": "Bundle",
@@ -273,7 +320,10 @@ def build_bundles(expected: pd.DataFrame, patients: pd.DataFrame,
         }
 
         path = output_dir / f"{patient_id}-exchange.json"
-        path.write_text(json.dumps(bundle, indent=2), encoding="utf-8")
+        path.write_text(
+            json.dumps(bundle, indent=2),
+            encoding="utf-8",
+        )
         written.append(path)
 
     return written

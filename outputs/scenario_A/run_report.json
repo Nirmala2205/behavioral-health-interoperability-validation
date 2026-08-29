@@ -1,36 +1,36 @@
 {
-  "run_id": "A-blindspots-n10",
+  "run_id": "A-v1_micro-n10",
   "scenario_id": "A",
   "scenario_name": "Baseline BH EHR -> statewide HIE -> receiving health system",
   "contract_version": "1.0.0",
   "patients": 10,
   "fhir_bundles_written": 9,
   "validation": {
-    "run_id": "A-blindspots-n10",
+    "run_id": "A-v1_micro-n10",
     "scenario_id": "A",
     "total_source_elements": 184,
     "total_expected_elements": 157,
-    "expected_elements_received": 157,
-    "completeness_pct": 100.0,
-    "comparable_elements": 157,
-    "comparable_elements_matched": 147,
-    "fidelity_pct": 93.63,
+    "expected_elements_received": 151,
+    "completeness_pct": 96.18,
+    "comparable_elements": 151,
+    "comparable_elements_matched": 146,
+    "fidelity_pct": 96.69,
     "elements_excluded_by_consent": 27,
-    "correct_authorized_exclusions": 27,
-    "unauthorized_disclosures": 0,
-    "total_failures": 10
+    "correct_authorized_exclusions": 25,
+    "unauthorized_disclosures": 2,
+    "total_failures": 18
   },
   "evaluation": {
-    "injected_failures": 10,
-    "negative_controls": 0,
-    "flagged_elements": 10,
-    "classification_true_positives": 5,
-    "detection_true_positives": 10,
-    "detected_but_misclassified": 5,
+    "injected_failures": 18,
+    "negative_controls": 3,
+    "flagged_elements": 18,
+    "classification_true_positives": 18,
+    "detection_true_positives": 18,
+    "detected_but_misclassified": 0,
     "false_negatives": 0,
     "false_positives": 0,
-    "true_negatives": 174,
-    "classification_sensitivity_pct": 50.0,
+    "true_negatives": 166,
+    "classification_sensitivity_pct": 100.0,
     "detection_sensitivity_pct": 100.0,
     "precision_pct": 100.0,
     "specificity_pct": 100.0,
@@ -41,13 +41,13 @@
   },
   "completeness_accuracy_check": {
     "total_expected_elements": 157,
-    "ground_truth_received": 157,
-    "ground_truth_completeness_pct": 100.0,
-    "framework_reported_completeness_pct": 100.0,
+    "ground_truth_received": 151,
+    "ground_truth_completeness_pct": 96.18,
+    "framework_reported_completeness_pct": 96.18,
     "agrees": true
   },
   "output_hashes": {
-    "validation_results": "8516be98500b06eb",
-    "failure_injections": "516d32fb8a4d078e"
+    "validation_results": "fe44cccbb26b4f6c",
+    "failure_injections": "6ed6a3c6eeadb025"
   }
 }

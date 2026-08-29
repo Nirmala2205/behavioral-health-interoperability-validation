@@ -1,12 +1,12 @@
 scenario_id,element_group,element_name,comparable_elements,values_preserved,value_mismatches,semantic_degradations,fidelity_pct
+B,diagnosis,diagnosis_code,15,12.0,1.0,2.0,80.0
+B,assessment,assessment_score,16,14.0,2.0,0.0,87.5
 B,assessment,assessment_code,16,16.0,0.0,0.0,100.0
 B,assessment,assessment_datetime,16,16.0,0.0,0.0,100.0
-B,assessment,assessment_score,16,16.0,0.0,0.0,100.0
-B,diagnosis,diagnosis_code,17,17.0,0.0,0.0,100.0
-B,diagnosis,diagnosis_display,17,17.0,0.0,0.0,100.0
+B,diagnosis,diagnosis_display,16,16.0,0.0,0.0,100.0
 B,diagnosis,diagnosis_onset,17,17.0,0.0,0.0,100.0
 B,encounter,encounter_class,17,17.0,0.0,0.0,100.0
 B,encounter,encounter_datetime,17,17.0,0.0,0.0,100.0
-B,medication,medication_code,7,7.0,0.0,0.0,100.0
+B,medication,medication_code,5,5.0,0.0,0.0,100.0
 B,medication,medication_dose,7,7.0,0.0,0.0,100.0
-B,medication,medication_frequency,7,7.0,0.0,0.0,100.0
+B,medication,medication_frequency,6,6.0,0.0,0.0,100.0
