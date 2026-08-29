@@ -173,10 +173,11 @@
             ],
             "timing": {
               "code": {
+                "text": "daily",
                 "coding": [
                   {
                     "system": "http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation",
-                    "code": "daily"
+                    "code": "QD"
                   }
                 ]
               }
@@ -280,10 +281,11 @@
             ],
             "timing": {
               "code": {
+                "text": "daily",
                 "coding": [
                   {
                     "system": "http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation",
-                    "code": "daily"
+                    "code": "QD"
                   }
                 ]
               }

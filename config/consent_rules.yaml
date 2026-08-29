@@ -67,7 +67,7 @@ sensitivity_assignment:
   medication_rxnorm_codes:
     sud_part2:
       - "1010600"   # buprenorphine / naloxone sublingual film
-      - "1116442"   # naltrexone extended-release injectable
+      - "637213"   # naltrexone extended-release injectable
     routine_default: true
 
 # -----------------------------------------------------------------------------

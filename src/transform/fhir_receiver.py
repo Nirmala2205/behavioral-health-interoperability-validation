@@ -248,21 +248,26 @@ def extract_medication_request(resource: dict[str, Any]) -> list[dict[str, Any]]
             "element_value": dose_text,
         })
 
-    frequency_coding = (
-        dosage.get("timing", {})
-        .get("code", {})
-        .get("coding", [])
-    )
+    timing_code = dosage.get("timing", {}).get("code", {})
+    frequency_text = timing_code.get("text")
+
+    frequency_coding = timing_code.get("coding", [])
     frequency0 = frequency_coding[0] if frequency_coding else {}
 
-    if frequency0.get("code") is not None:
+    frequency_value = (
+        frequency_text
+        if frequency_text not in (None, "")
+        else frequency0.get("code")
+    )
+
+    if frequency_value is not None:
         rows.append({
             "patient_id": patient_id,
             "encounter_id": encounter_id,
             "group_id": group_id,
             "element_group": "medication",
             "element_name": "medication_frequency",
-            "element_value": str(frequency0["code"]),
+            "element_value": str(frequency_value),
         })
 
     return rows

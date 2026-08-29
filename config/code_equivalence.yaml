@@ -116,7 +116,7 @@ systems:
         - "1010600_IN"            # synthetic placeholder ingredient concept
       equivalent: []
 
-    "1116442":                    # naltrexone ER injectable       (SCD)
+    "637213":                    # naltrexone ER injectable       (SCD)
       display: "Naltrexone 380 MG Injection"
       broader:
         - "7243"                  # naltrexone                     (IN)
@@ -169,7 +169,7 @@ frequency_synonyms:
     - "at bedtime"
     - "qhs"
     - "nightly"
-  QMONTH:
+  MO:
     - "monthly"
     - "once monthly"
     - "every 4 weeks"

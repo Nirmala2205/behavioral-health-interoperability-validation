@@ -176,6 +176,8 @@ def _observation_resource(patient_id: str, encounter_id: str, group_id: str,
 
 def _medication_request_resource(patient_id: str, encounter_id: str, group_id: str,
                                  values: dict[str, str]) -> dict[str, Any]:
+    from config_loader import load_equivalence
+
     dose_text = values.get("medication_dose", "")
     dose_quantity: dict[str, Any] | None = None
     if dose_text:
@@ -193,12 +195,26 @@ def _medication_request_resource(patient_id: str, encounter_id: str, group_id: s
     ).strip()}
     if dose_quantity:
         dosage["doseAndRate"] = [{"doseQuantity": dose_quantity}]
-    if values.get("medication_frequency"):
-        dosage["timing"] = {"code": {"coding": [{
-            "system": "http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation",
-            "code": values["medication_frequency"],
-        }]}}
 
+    if values.get("medication_frequency"):
+        frequency_text = values["medication_frequency"]
+        canonical_frequency = load_equivalence().canonical_frequency(
+            frequency_text
+        )
+
+        timing_code: dict[str, Any] = {
+            "text": frequency_text,
+        }
+
+        if canonical_frequency:
+            timing_code["coding"] = [{
+                "system": "http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation",
+                "code": canonical_frequency,
+            }]
+
+        dosage["timing"] = {
+            "code": timing_code,
+        }
     return {
         "resourceType": "MedicationRequest",
         "id": f"{encounter_id}-{group_id}",

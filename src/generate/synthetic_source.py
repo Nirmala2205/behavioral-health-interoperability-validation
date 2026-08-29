@@ -77,7 +77,7 @@ DIAGNOSES: tuple[DiagnosisTemplate, ...] = (
                       ("PHQ9",), ()),
     # --- Part 2 sensitive -----------------------------------------------------
     DiagnosisTemplate("F10.20", "Alcohol dependence, uncomplicated",
-                      ("PHQ9",), ("1116442",)),
+                      ("PHQ9",), ("637213",)),
     DiagnosisTemplate("F11.20", "Opioid dependence, uncomplicated",
                       ("GAD7",), ("1010600",)),
 )
@@ -93,7 +93,7 @@ MEDICATIONS: dict[str, dict[str, Any]] = {
     "856706": {"display": "Venlafaxine 75 MG ER Oral Tablet", "dose_mg": 75, "frequency": "daily"},
     "1010600": {"display": "Buprenorphine 8 MG / Naloxone 2 MG Sublingual Film",
                 "dose_mg": 8, "frequency": "daily"},
-    "1116442": {"display": "Naltrexone 380 MG Injection",
+    "637213": {"display": "Naltrexone 380 MG Injection",
                 "dose_mg": 380, "frequency": "monthly"},
 }
 
