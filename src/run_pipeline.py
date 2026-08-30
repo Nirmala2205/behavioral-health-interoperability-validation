@@ -36,6 +36,7 @@ import pandas as pd
 import paths
 from config_loader import (load_contract, load_injection_profile, load_scenario)
 from generate.synthetic_source import generate_source_truth
+from inject_failures.fhir_injector import inject_fhir_numeric_value
 from inject_failures.injector import inject_failures
 from metrics.evaluate import completeness_accuracy, evaluate
 from transform.destination import clean_received
@@ -128,12 +129,38 @@ def run_scenario(scenario_id: str, args: argparse.Namespace) -> dict[str, Any]:
     bundle_dir = paths.scenario_dir(paths.FHIR_EXCHANGE, scenario_id)
     bundles = build_bundles(expected, patients, bundle_dir)
 
+    fhir_injections = pd.DataFrame()
+
+    if args.fhir_failure:
+     fhir_injections = inject_fhir_numeric_value(
+        bundle_dir,
+        expected,
+        scenario_id,
+    )
+
     # --- 4. Wire copy and clean destination state --------------------------
     wire = build_wire_from_fhir(expected, scenario, bundle_dir)
     clean = clean_received(wire)
 
     # --- 5. Controlled failure injection -----------------------------------
-    received, injections = inject_failures(clean, expected, profile, scenario_id)
+    received, destination_injections = inject_failures(
+    clean,
+    expected,
+    profile,
+    scenario_id,
+    )
+
+    destination_injections = destination_injections.copy()
+    destination_injections["failure_stage"] = "destination"
+
+    injections = pd.concat(
+    [
+        fhir_injections,
+        destination_injections,
+    ],
+    ignore_index=True,
+    sort=False,
+    )
 
     # --- 6. Validation ------------------------------------------------------
     results = validate(expected, received, run_id)
@@ -246,6 +273,11 @@ def main() -> int:
     parser.add_argument("--patients", type=int, default=None)
     parser.add_argument("--clean", action="store_true",
                         help="Run with zero injected failures (false-positive check).")
+    parser.add_argument(
+    "--fhir-failure",
+    action="store_true",
+    help="Inject one controlled numeric failure directly into generated FHIR.",
+)
     parser.add_argument("--verify-reproducible", action="store_true",
                         help="Run twice and confirm identical output hashes.")
     parser.add_argument("--quiet", action="store_true")
