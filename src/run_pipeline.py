@@ -154,8 +154,8 @@ def run_scenario(scenario_id: str, args: argparse.Namespace) -> dict[str, Any]:
             expected,
             scenario_id,
         )
-    elif args.fhir_failure == "element-loss":
-        fhir_injections = inject_fhir_element_loss(
+    elif args.fhir_failure == "patient-linkage":
+        fhir_injections = inject_fhir_wrong_patient_linkage(
             bundle_dir,
             expected,
             scenario_id,
