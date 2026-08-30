@@ -250,6 +250,13 @@ def build_bundles(expected: pd.DataFrame, patients: pd.DataFrame,
 
     consent_rules = load_consent_rules()
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Each call creates one complete corpus. Remove bundle files left by a
+    # previous run so changed patient counts or consent states cannot leak
+    # stale clinical resources into the new exchange.
+    for stale_bundle in output_dir.glob("*-exchange.json"):
+        stale_bundle.unlink()
+
     written: list[Path] = []
 
     authorized = expected[expected["authorized"]]
