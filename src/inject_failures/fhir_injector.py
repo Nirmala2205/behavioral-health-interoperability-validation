@@ -191,3 +191,85 @@ def inject_fhir_semantic_code_degradation(
         "No authorized diagnosis_code with a documented less-specific mapping "
         "is available for FHIR semantic injection."
     )
+
+def inject_fhir_element_loss(
+    bundle_dir: Path,
+    expected: pd.DataFrame,
+    scenario_id: str,
+) -> pd.DataFrame:
+    """Remove one optional assessment datetime directly from FHIR."""
+
+    eligible = expected[
+        (expected["authorized"])
+        & (expected["element_name"] == "assessment_datetime")
+    ]
+
+    if eligible.empty:
+        raise ValueError(
+            "No authorized assessment_datetime is available "
+            "for FHIR element-loss injection."
+        )
+
+    target = eligible.iloc[0]
+
+    patient_id = str(target["patient_id"])
+    encounter_id = str(target["encounter_id"])
+    group_id = str(target["group_id"])
+
+    bundle_path = bundle_dir / f"{patient_id}-exchange.json"
+
+    if not bundle_path.exists():
+        raise FileNotFoundError(
+            f"FHIR bundle not found: {bundle_path}"
+        )
+
+    bundle: dict[str, Any] = json.loads(
+        bundle_path.read_text(encoding="utf-8")
+    )
+
+    target_resource_id = f"{encounter_id}-{group_id}"
+
+    for entry in bundle.get("entry", []):
+        resource = entry.get("resource", {})
+
+        if (
+            resource.get("resourceType") == "Observation"
+            and resource.get("id") == target_resource_id
+        ):
+            original_value = resource.get("effectiveDateTime")
+
+            if original_value is None:
+                raise ValueError(
+                    "Target Observation has no effectiveDateTime."
+                )
+
+            del resource["effectiveDateTime"]
+
+            bundle_path.write_text(
+                json.dumps(bundle, indent=2),
+                encoding="utf-8",
+            )
+
+            return pd.DataFrame([{
+                "injection_id": f"{scenario_id}-FHIR-INJ0003",
+                "scenario_id": scenario_id,
+                "failure_stage": "fhir",
+                "failure_type": "drop_subfield",
+                "expected_detection": "subfield_dropped",
+                "target_element_uid": target["element_uid"],
+                "target_patient_id": patient_id,
+                "target_encounter_id": encounter_id,
+                "element_name": target["element_name"],
+                "element_group": target["element_group"],
+                "original_value": str(original_value),
+                "injected_value": None,
+                "detail": (
+                    "Optional assessment datetime removed directly from "
+                    "FHIR Observation.effectiveDateTime."
+                ),
+            }])
+
+    raise ValueError(
+        f"Target Observation {target_resource_id} was not found "
+        f"in {bundle_path.name}."
+    )

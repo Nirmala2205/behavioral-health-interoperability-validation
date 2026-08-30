@@ -302,6 +302,7 @@ def build_wire_from_fhir(
     expected: pd.DataFrame,
     scenario: dict[str, Any],
     bundle_dir: Path,
+    allow_missing_authorized: bool = False,
 ) -> pd.DataFrame:
     """Build the exchange wire representation from the generated FHIR bundles.
 
@@ -355,7 +356,7 @@ def build_wire_from_fhir(
     missing_from_fhir = expected_keys - parsed_keys
     unexpected_in_fhir = parsed_keys - expected_keys
 
-    if missing_from_fhir:
+    if missing_from_fhir and not allow_missing_authorized:
         raise ValueError(
             f"FHIR reconstruction is missing {len(missing_from_fhir)} "
             "authorized expected elements."
@@ -408,6 +409,15 @@ def build_wire_from_fhir(
         key = tuple(record[column] for column in key_columns)
 
         if bool(record["authorized"]):
+            if key not in parsed_value_by_key:
+                if allow_missing_authorized:
+                    continue
+
+                raise ValueError(
+                    "Authorized expected element is missing from "
+                    "the reconstructed FHIR payload."
+                )
+
             value = parsed_value_by_key[key]
         else:
             value = record["element_value"]

@@ -36,7 +36,11 @@ import pandas as pd
 import paths
 from config_loader import (load_contract, load_injection_profile, load_scenario)
 from generate.synthetic_source import generate_source_truth
-from inject_failures.fhir_injector import inject_fhir_numeric_value
+from inject_failures.fhir_injector import (
+    inject_fhir_element_loss,
+    inject_fhir_numeric_value,
+    inject_fhir_semantic_code_degradation,
+)
 from inject_failures.injector import inject_failures
 from metrics.evaluate import completeness_accuracy, evaluate
 from transform.destination import clean_received
@@ -131,15 +135,34 @@ def run_scenario(scenario_id: str, args: argparse.Namespace) -> dict[str, Any]:
 
     fhir_injections = pd.DataFrame()
 
-    if args.fhir_failure:
-     fhir_injections = inject_fhir_numeric_value(
-        bundle_dir,
-        expected,
-        scenario_id,
-    )
+    if args.fhir_failure == "numeric":
+        fhir_injections = inject_fhir_numeric_value(
+            bundle_dir,
+            expected,
+            scenario_id,
+        )
+    elif args.fhir_failure == "semantic":
+        fhir_injections = inject_fhir_semantic_code_degradation(
+            bundle_dir,
+            expected,
+            scenario_id,
+        )
+    elif args.fhir_failure == "element-loss":
+        fhir_injections = inject_fhir_element_loss(
+            bundle_dir,
+            expected,
+            scenario_id,
+        )
 
     # --- 4. Wire copy and clean destination state --------------------------
-    wire = build_wire_from_fhir(expected, scenario, bundle_dir)
+    wire = build_wire_from_fhir(
+        expected,
+        scenario,
+        bundle_dir,
+        allow_missing_authorized=(
+            args.fhir_failure == "element-loss"
+        ),
+    )
     clean = clean_received(wire)
 
     # --- 5. Controlled failure injection -----------------------------------
@@ -274,10 +297,16 @@ def main() -> int:
     parser.add_argument("--clean", action="store_true",
                         help="Run with zero injected failures (false-positive check).")
     parser.add_argument(
-    "--fhir-failure",
-    action="store_true",
-    help="Inject one controlled numeric failure directly into generated FHIR.",
-)
+        "--fhir-failure",
+        nargs="?",
+        const="numeric",
+        choices=["numeric", "semantic", "element-loss"],
+        default=None,
+        help=(
+            "Inject one controlled failure directly into generated FHIR. "
+            "Using the flag without a value defaults to numeric."
+        ),
+    )
     parser.add_argument("--verify-reproducible", action="store_true",
                         help="Run twice and confirm identical output hashes.")
     parser.add_argument("--quiet", action="store_true")
