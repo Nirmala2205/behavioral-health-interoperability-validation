@@ -196,14 +196,16 @@ denominator of zero, which I report as undefined rather than 0%.
 
 **"How do you know your framework works?"**
 I inject known failures and keep a ledger of exactly what was broken, then score
-the detector against it: TP, FP, FN, TN, sensitivity, precision, specificity.
-100% classification sensitivity with 0 false positives at 500-patient scale. But
-I'd add that this is a necessary condition, not an achievement — a detector
-evaluated only against failures I imagined will score well by construction. So I
-also built an adversarial profile that injects a degradation my equivalence map
-deliberately doesn't cover. It catches all of them and misclassifies all of
-them: 100% detection, 0% classification. That's the honest characterization of a
-curated-terminology approach.
+the detector against it using TP, FP, FN, TN, sensitivity, precision, and
+specificity. Across two archived 500-patient scenarios, it correctly classifies
+3,100/3,100 primary-profile failures: 100% classification sensitivity with a
+95% Wilson interval of 99.88%–100%, and 13,668/13,668 true negatives with zero
+false positives. Those are necessary internal-validation results, not evidence
+of real-world performance. In a held-out terminology profile, it detects all
+20 degradations but correctly classifies only 10: 50% classification sensitivity
+with a 95% interval of 29.93%–70.07%. The uncurated degradations are all
+misclassified as `value_mismatch`, which exposes the limit of the curated
+terminology map.
 
 **"Isn't this just FHIR validation?"**
 No, and the difference is the point. Conformance validation asks whether a
@@ -222,13 +224,16 @@ receiving organization would respond to them very differently — one is a
 mapping-depth problem, the other is a wrong-record problem.
 
 **"What's the biggest weakness?"**
-That the failures are ones I designed the detector to find. The synthetic
-environment makes the injector and validator complementary by construction. The
-adversarial profile pushes against that, and the two measurement bugs I found —
-one where the ledger was incomplete, one where it was incorrect — are documented
-in the repo because both times the *detector* was right and the *measurement*
-was wrong. What would actually validate the method is real data under a
-data-use agreement.
+The failures and synthetic data are controlled, so the primary injector and
+validator are complementary by design. The held-out terminology profile tests
+one known blind spot, but it cannot represent the distribution of unanticipated
+real exchange failures. The repository documents four defects found while
+building the evaluation: an incomplete ledger caused by baseline latency, an
+incorrect timeliness post-condition, stale FHIR bundles surviving between runs,
+and a CLI option that was accepted but not dispatched. Those defects are useful
+evidence of why the measurement machinery must be validated independently.
+What would establish external validity is testing real exchange data under an
+appropriate data-use agreement.
 
 **"How does this connect to your job?"**
 It started from a reporting problem I traced at work: a query returning fewer

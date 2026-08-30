@@ -229,10 +229,12 @@ run reported 114 false negatives and 32% timeliness sensitivity for a detector
 that was correct in every one of those cases.
 
 The general principle, which applies to any injection-based evaluation:
-**an injected failure is only ground truth if it actually produces the failure
-condition.** An injector that does not check its own post-condition silently
-corrupts the reference standard, and the resulting error is attributed to the
-detector.
+**an injected failure is ground truth only if it actually produces the failure
+condition, enters the evaluated path, and is isolated from state left by prior
+runs.** A broken post-condition corrupts the ledger, a broken dispatch path means
+the requested perturbation never occurs, and stale generated artifacts violate
+run isolation. In every case, the resulting performance estimate describes the
+evaluation machinery rather than the detector.
 
 **Note on circularity.** The injector now reads the same threshold table the
 engine reads. That is shared experimental specification, not circular
@@ -264,22 +266,31 @@ visible in one table.
 
 ## 13. What the perfect scores mean
 
-100% classification sensitivity and 0 false positives, at both 10- and
-500-patient scale and across two rendering scenarios, is a **necessary
-condition, not an achievement.** It demonstrates:
+At micro scale, both 10-patient scenarios correctly classify all 18 injected
+failures with zero false positives. In the archived primary benchmark, Scenario
+A classifies 1,557/1,557 failures and Scenario B classifies 1,543/1,543.
+Combined classification sensitivity is **3,100/3,100 (100%; 95% Wilson CI
+99.88%–100%)**, and specificity is **13,668/13,668 (100%; 95% Wilson CI
+99.97%–100%)**. These results are a **necessary condition, not an
+achievement.** They demonstrate:
 
 - the comparison rules are internally consistent;
-- the reference standard is sound (after two defects in it were found and fixed);
+- the reference standard is sound after its latency and injection-post-condition defects were found and fixed;
 - the consent denominator behaves correctly in both directions;
-- normalization absorbs rendering differences without absorbing real ones;
-- results are deterministic and reproducible.
+- normalization absorbs rendering differences without absorbing the curated failures;
+- results are deterministic and reproducible;
+- FHIR-layer numeric, semantic, element-loss, and patient-linkage perturbations traverse the evaluated parsing path.
 
-It does **not** demonstrate anything about real-world failures whose modes were
-never anticipated — which are the ones that matter. A detector evaluated only
-against failures its own author imagined will score well by construction. The
-adversarial profile exists to keep that fact visible in the numbers, and the
-honest summary of these results is: *the method is ready to be tested on real
-data*, not *the method works*.
+They do **not** demonstrate performance on real-world failures whose modes were
+never anticipated. In the held-out terminology benchmark, all 20 degradations
+are detected, but only 10/20 are classified correctly: **50% classification
+sensitivity (95% Wilson CI 29.93%–70.07%)**. The uncurated category-ancestor
+degradations are reported as `value_mismatch`, exposing the limit of a
+hand-curated equivalence map.
+
+A detector evaluated only against failures its author imagined will tend to
+score well by construction. The honest summary is therefore: *the method is
+ready to be tested on real data*, not *the method works on real exchange data*.
 
 ---
 
