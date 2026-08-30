@@ -5,6 +5,13 @@ import pandas as pd
 import pytest
 
 from inject_failures.fhir_injector import inject_fhir_numeric_value
+from config_loader import load_scenario
+from generate.synthetic_source import generate_source_truth
+from transform.destination import clean_received
+from transform.expected_exchange import build_expected_exchange
+from transform.fhir_builder import build_bundles
+from transform.fhir_receiver import build_wire_from_fhir
+from validate.engine import validate
 
 
 def test_inject_fhir_numeric_value_changes_observation(tmp_path):
@@ -97,4 +104,54 @@ def test_inject_fhir_numeric_value_requires_authorized_score(tmp_path):
             tmp_path,
             expected,
             "A",
-        )    
+        )   
+
+def test_fhir_numeric_failure_is_detected_end_to_end(tmp_path):
+    scenario = load_scenario("A")
+
+    source_truth, patients = generate_source_truth(scenario)
+    expected = build_expected_exchange(
+        source_truth,
+        patients,
+    )
+
+    build_bundles(
+        expected,
+        patients,
+        tmp_path,
+    )
+
+    ledger = inject_fhir_numeric_value(
+        tmp_path,
+        expected,
+        "A",
+    )
+
+    wire = build_wire_from_fhir(
+        expected,
+        scenario,
+        tmp_path,
+    )
+
+    received = clean_received(wire)
+
+    results = validate(
+        expected,
+        received,
+        "A-fhir-integration-test",
+    )
+
+    target_uid = ledger.iloc[0]["target_element_uid"]
+
+    target = results[
+        results["element_uid"] == target_uid
+    ]
+
+    assert len(target) == 1
+
+    row = target.iloc[0]
+
+    assert row["status"] == "FAIL"
+    assert row["verdict"] == "value_mismatch"
+    assert row["dimension"] == "fidelity"
+    assert row["expected_value"] != row["received_value"] 
