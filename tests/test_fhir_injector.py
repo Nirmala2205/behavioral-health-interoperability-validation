@@ -4,7 +4,10 @@ import json
 import pandas as pd
 import pytest
 
-from inject_failures.fhir_injector import inject_fhir_numeric_value
+from inject_failures.fhir_injector import (
+    inject_fhir_numeric_value,
+    inject_fhir_semantic_code_degradation,
+)
 from config_loader import load_scenario
 from generate.synthetic_source import generate_source_truth
 from transform.destination import clean_received
@@ -78,7 +81,7 @@ def test_inject_fhir_numeric_value_changes_observation(tmp_path):
     )
     assert ledger.iloc[0]["original_value"] == "9"
     assert ledger.iloc[0]["injected_value"] == "19"
-    import pytest
+    
 
 
 def test_inject_fhir_numeric_value_requires_authorized_score(tmp_path):
@@ -155,3 +158,124 @@ def test_fhir_numeric_failure_is_detected_end_to_end(tmp_path):
     assert row["verdict"] == "value_mismatch"
     assert row["dimension"] == "fidelity"
     assert row["expected_value"] != row["received_value"] 
+
+
+def test_inject_fhir_semantic_code_degradation_changes_condition(tmp_path):
+    bundle = {
+        "resourceType": "Bundle",
+        "type": "collection",
+        "entry": [
+            {
+                "resource": {
+                    "resourceType": "Condition",
+                    "id": "P1-E01-DX1",
+                    "code": {
+                        "coding": [{
+                            "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                            "code": "F41.1",
+                            "display": "Generalized anxiety disorder",
+                        }]
+                    },
+                    "subject": {
+                        "reference": "Patient/P1",
+                    },
+                    "encounter": {
+                        "reference": "Encounter/P1-E01",
+                    },
+                }
+            }
+        ],
+    }
+
+    bundle_path = tmp_path / "P1-exchange.json"
+    bundle_path.write_text(
+        json.dumps(bundle),
+        encoding="utf-8",
+    )
+
+    expected = pd.DataFrame([
+        {
+            "element_uid": "A:P1:P1-E01:DX1:diagnosis_code",
+            "scenario_id": "A",
+            "patient_id": "P1",
+            "encounter_id": "P1-E01",
+            "group_id": "DX1",
+            "element_group": "diagnosis",
+            "element_name": "diagnosis_code",
+            "element_value": "F41.1",
+            "code_system": "http://hl7.org/fhir/sid/icd-10-cm",
+            "authorized": True,
+        }
+    ])
+
+    ledger = inject_fhir_semantic_code_degradation(
+        tmp_path,
+        expected,
+        "A",
+    )
+
+    mutated_bundle = json.loads(
+        bundle_path.read_text(encoding="utf-8")
+    )
+
+    condition = mutated_bundle["entry"][0]["resource"]
+    mutated_code = condition["code"]["coding"][0]["code"]
+
+    assert mutated_code == "F41.9"
+
+    assert len(ledger) == 1
+    assert ledger.iloc[0]["failure_stage"] == "fhir"
+    assert ledger.iloc[0]["failure_type"] == "degrade_code"
+    assert ledger.iloc[0]["expected_detection"] == "semantic_degraded"
+    assert ledger.iloc[0]["original_value"] == "F41.1"
+    assert ledger.iloc[0]["injected_value"] == "F41.9"   
+
+def test_fhir_semantic_failure_is_detected_end_to_end(tmp_path):
+    scenario = load_scenario("A")
+
+    source_truth, patients = generate_source_truth(scenario)
+    expected = build_expected_exchange(
+        source_truth,
+        patients,
+    )
+
+    build_bundles(
+        expected,
+        patients,
+        tmp_path,
+    )
+
+    ledger = inject_fhir_semantic_code_degradation(
+        tmp_path,
+        expected,
+        "A",
+    )
+
+    wire = build_wire_from_fhir(
+        expected,
+        scenario,
+        tmp_path,
+    )
+
+    received = clean_received(wire)
+
+    results = validate(
+        expected,
+        received,
+        "A-fhir-semantic-integration-test",
+    )
+
+    target_uid = ledger.iloc[0]["target_element_uid"]
+
+    target = results[
+        results["element_uid"] == target_uid
+    ]
+
+    assert len(target) == 1
+
+    row = target.iloc[0]
+
+    assert row["status"] == "FAIL"
+    assert row["verdict"] == "semantic_degraded"
+    assert row["dimension"] == "semantic"
+    assert row["expected_value"] != row["received_value"]     

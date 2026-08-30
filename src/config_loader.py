@@ -236,7 +236,7 @@ class EquivalenceMap:
         return "unrelated"
 
     def broader_codes(self, system: str | None, expected: str) -> list[str]:
-        """Documented broader ancestors, used by the failure injector."""
+        """Documented less-specific mappings used by the failure injector."""
         exp = (expected or "").strip().upper()
         for code, body in self.systems.get(system or "", {}).items():
             if str(code).strip().upper() == exp:

@@ -10,7 +10,7 @@
 # code Y was expected, is that
 #
 #   (a) the same concept expressed differently        -> equivalent, PASS
-#   (b) a less specific ancestor of the expected code -> semantic_degraded, FAIL
+#   (b) a documented less-specific code representing partial loss of specificity -> semantic_degraded, FAIL
 #   (c) an unrelated concept                          -> value_mismatch, FAIL
 #
 # Case (b) is the one that matters. A framework without an equivalence map

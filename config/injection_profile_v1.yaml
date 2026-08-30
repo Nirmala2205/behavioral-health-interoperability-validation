@@ -79,7 +79,7 @@ fixed_counts:
     targets:
       element_names: [diagnosis_code, medication_code]
     description: >-
-      Replace a code with a documented broader ancestor from
+      Replace a code with a documented less-specific mapping from
       config/code_equivalence.yaml. Structurally valid FHIR, clinically less
       specific -- invisible to conformance validation.
 

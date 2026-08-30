@@ -293,7 +293,7 @@ def inject_failures(clean: pd.DataFrame, expected: pd.DataFrame,
                 new_value = rng.choice(broader)
                 row["element_value"] = new_value
                 ledger.record(failure_type, expected_detection, row,
-                              "Code replaced with a documented broader ancestor; "
+                              "Code replaced with a documented less-specific mapping; "
                               "structurally valid but less specific.",
                               original_value=original, injected_value=new_value)
 

@@ -101,7 +101,7 @@ elements:
     tolerance: null
     notes: >-
       Uses code_equivalence rather than exact so the framework can distinguish
-      a DEGRADED code (received code is a documented broader ancestor of the
+      a DEGRADED code (received code is a documented less-specific mapping of the
       expected code -- meaning survived partially) from an INCORRECT code
       (unrelated concept). That distinction is the whole point of the semantic
       dimension; an exact-match comparison would collapse both into
