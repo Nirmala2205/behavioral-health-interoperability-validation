@@ -1,0 +1,2 @@
+run_id,scenario_id,total_source_elements,expected_elements,consent_excluded_elements,elements_received,completeness_pct,comparable_elements,fidelity_pct,f_missing,f_subfield_dropped,f_value_mismatch,f_semantic_degraded,f_patient_linkage,f_encounter_linkage,f_timeliness,f_unauthorized_disclosure,f_consent_over_restriction,correct_authorized_exclusions,total_pass,total_fail
+A-blindspots-n500,A,8421,6964.0,1457.0,6964.0,100.0,6964.0,99.86,0.0,0.0,5.0,5.0,0.0,0.0,0.0,0.0,0.0,1457.0,8411.0,10.0

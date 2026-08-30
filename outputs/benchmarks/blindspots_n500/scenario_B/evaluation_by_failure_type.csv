@@ -1,0 +1,2 @@
+expected_detection,injected,detected_correct_class,detected_wrong_class,missed,classification_sensitivity_pct,misclassified_as
+semantic_degraded,10,5,5,0,50.0,value_mismatch

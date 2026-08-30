@@ -1,0 +1,2 @@
+run_id,scenario_id,total_source_elements,expected_elements,consent_excluded_elements,elements_received,completeness_pct,comparable_elements,fidelity_pct,f_missing,f_subfield_dropped,f_value_mismatch,f_semantic_degraded,f_patient_linkage,f_encounter_linkage,f_timeliness,f_unauthorized_disclosure,f_consent_over_restriction,correct_authorized_exclusions,total_pass,total_fail
+B-v1_micro-n500,B,8347,6725.0,1622.0,6266.0,93.17,6266.0,91.35,167.0,167.0,333.0,209.0,42.0,83.0,167.0,250.0,125.0,1372.0,6804.0,1543.0

@@ -1,0 +1,10 @@
+expected_detection,injected,detected_correct_class,detected_wrong_class,missed,classification_sensitivity_pct,misclassified_as
+consent_over_restriction,125,125,0,0,100.0,
+encounter_linkage,83,83,0,0,100.0,
+missing_element,167,167,0,0,100.0,
+patient_linkage,42,42,0,0,100.0,
+semantic_degraded,209,209,0,0,100.0,
+subfield_dropped,167,167,0,0,100.0,
+timeliness,167,167,0,0,100.0,
+unauthorized_disclosure,250,250,0,0,100.0,
+value_mismatch,333,333,0,0,100.0,
