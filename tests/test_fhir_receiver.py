@@ -1,8 +1,11 @@
+import json
+
 from transform.fhir_receiver import (
     extract_encounter,
     extract_condition,
     extract_observation,
     extract_medication_request,
+    parse_fhir_bundles,
 )
 
 
@@ -170,4 +173,83 @@ def test_extract_medication_request_falls_back_to_frequency_code():
     }
 
     assert values["medication_frequency"] == "QD"
+    import json
+
+from transform.fhir_receiver import parse_fhir_bundles
+
+
+def test_parse_fhir_bundles(tmp_path):
+    bundle = {
+        "resourceType": "Bundle",
+        "type": "collection",
+        "entry": [
+            {
+                "fullUrl": "https://example.org/fhir/Patient/P1",
+                "resource": {
+                    "resourceType": "Patient",
+                    "id": "P1",
+                },
+            },
+            {
+                "fullUrl": "https://example.org/fhir/Encounter/P1-E01",
+                "resource": {
+                    "resourceType": "Encounter",
+                    "id": "P1-E01",
+                    "status": "finished",
+                    "class": {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "AMB",
+                    },
+                    "subject": {
+                        "reference": "Patient/P1",
+                    },
+                    "period": {
+                        "start": "2026-03-02T08:00:00+00:00",
+                    },
+                },
+            },
+            {
+                "fullUrl": "https://example.org/fhir/Condition/P1-E01-DX1",
+                "resource": {
+                    "resourceType": "Condition",
+                    "id": "P1-E01-DX1",
+                    "code": {
+                        "coding": [{
+                            "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                            "code": "F32.1",
+                            "display": (
+                                "Major depressive disorder, "
+                                "single episode, moderate"
+                            ),
+                        }]
+                    },
+                    "subject": {
+                        "reference": "Patient/P1",
+                    },
+                    "encounter": {
+                        "reference": "Encounter/P1-E01",
+                    },
+                    "onsetDateTime": "2026-01-15",
+                },
+            },
+        ],
+    }
+
+    bundle_path = tmp_path / "P1-exchange.json"
+    bundle_path.write_text(
+        json.dumps(bundle),
+        encoding="utf-8",
+    )
+
+    parsed = parse_fhir_bundles(tmp_path)
+
+    values = {
+        row["element_name"]: row["element_value"]
+        for row in parsed.to_dict("records")
+    }
+
+    assert values["encounter_class"] == "AMB"
+    assert values["encounter_datetime"] == "2026-03-02T08:00:00+00:00"
+    assert values["diagnosis_code"] == "F32.1"
+    assert values["diagnosis_onset"] == "2026-01-15"
     
