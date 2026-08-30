@@ -40,6 +40,7 @@ from inject_failures.fhir_injector import (
     inject_fhir_element_loss,
     inject_fhir_numeric_value,
     inject_fhir_semantic_code_degradation,
+    inject_fhir_wrong_patient_linkage,
 )
 from inject_failures.injector import inject_failures
 from metrics.evaluate import completeness_accuracy, evaluate
@@ -153,6 +154,12 @@ def run_scenario(scenario_id: str, args: argparse.Namespace) -> dict[str, Any]:
             expected,
             scenario_id,
         )
+    elif args.fhir_failure == "element-loss":
+        fhir_injections = inject_fhir_element_loss(
+            bundle_dir,
+            expected,
+            scenario_id,
+        )
 
     # --- 4. Wire copy and clean destination state --------------------------
     wire = build_wire_from_fhir(
@@ -161,6 +168,9 @@ def run_scenario(scenario_id: str, args: argparse.Namespace) -> dict[str, Any]:
         bundle_dir,
         allow_missing_authorized=(
             args.fhir_failure == "element-loss"
+        ),
+        allow_patient_linkage_corruption=(
+            args.fhir_failure == "patient-linkage"
         ),
     )
     clean = clean_received(wire)
@@ -300,7 +310,12 @@ def main() -> int:
         "--fhir-failure",
         nargs="?",
         const="numeric",
-        choices=["numeric", "semantic", "element-loss"],
+                choices=[
+            "numeric",
+            "semantic",
+            "element-loss",
+            "patient-linkage",
+        ],
         default=None,
         help=(
             "Inject one controlled failure directly into generated FHIR. "

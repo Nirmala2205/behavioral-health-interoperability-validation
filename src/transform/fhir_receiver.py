@@ -303,6 +303,7 @@ def build_wire_from_fhir(
     scenario: dict[str, Any],
     bundle_dir: Path,
     allow_missing_authorized: bool = False,
+    allow_patient_linkage_corruption: bool = False,
 ) -> pd.DataFrame:
     """Build the exchange wire representation from the generated FHIR bundles.
 
@@ -321,6 +322,12 @@ def build_wire_from_fhir(
 
     key_columns = [
         "patient_id",
+        "encounter_id",
+        "group_id",
+        "element_group",
+        "element_name",
+    ]
+    linkage_key_columns = [
         "encounter_id",
         "group_id",
         "element_group",
@@ -356,21 +363,57 @@ def build_wire_from_fhir(
     missing_from_fhir = expected_keys - parsed_keys
     unexpected_in_fhir = parsed_keys - expected_keys
 
-    if missing_from_fhir and not allow_missing_authorized:
+    if (
+        missing_from_fhir
+        and not allow_missing_authorized
+        and not allow_patient_linkage_corruption
+    ):
         raise ValueError(
             f"FHIR reconstruction is missing {len(missing_from_fhir)} "
             "authorized expected elements."
         )
 
-    if unexpected_in_fhir:
+    if unexpected_in_fhir and not allow_patient_linkage_corruption:
         raise ValueError(
             f"FHIR reconstruction contains {len(unexpected_in_fhir)} "
             "unexpected clinical elements."
         )
+        if allow_patient_linkage_corruption:
+         if parsed.duplicated(linkage_key_columns).any():
+            raise ValueError(
+                "FHIR reconstruction produced duplicate linkage keys."
+            )
+
+        if authorized_expected.duplicated(
+            linkage_key_columns
+        ).any():
+            raise ValueError(
+                "EXPECTED_EXCHANGE contains duplicate linkage keys."
+            )
+
+        expected_linkage_keys = {
+            tuple(row[column] for column in linkage_key_columns)
+            for row in authorized_expected.to_dict("records")
+        }
+
+        parsed_linkage_keys = {
+            tuple(row[column] for column in linkage_key_columns)
+            for row in parsed.to_dict("records")
+        }
+
+        if expected_linkage_keys != parsed_linkage_keys:
+            raise ValueError(
+                "FHIR reconstruction cannot reconcile the authorized "
+                "elements using encounter and group identity."
+            )
 
     # Lookup containing the value that ACTUALLY came back from FHIR.
     parsed_value_by_key = {
         tuple(row[column] for column in key_columns): row["element_value"]
+        for row in parsed.to_dict("records")
+    }
+    parsed_record_by_linkage_key = {
+        tuple(row[column] for column in linkage_key_columns): row
         for row in parsed.to_dict("records")
     }
 
@@ -408,17 +451,34 @@ def build_wire_from_fhir(
 
         key = tuple(record[column] for column in key_columns)
 
+        received_patient_id = record["patient_id"]
+        received_encounter_id = record["encounter_id"]
+
         if bool(record["authorized"]):
-            if key not in parsed_value_by_key:
-                if allow_missing_authorized:
-                    continue
-
-                raise ValueError(
-                    "Authorized expected element is missing from "
-                    "the reconstructed FHIR payload."
+            if allow_patient_linkage_corruption:
+                linkage_key = tuple(
+                    record[column]
+                    for column in linkage_key_columns
                 )
+                parsed_record = parsed_record_by_linkage_key[
+                    linkage_key
+                ]
 
-            value = parsed_value_by_key[key]
+                value = parsed_record["element_value"]
+                received_patient_id = parsed_record["patient_id"]
+                received_encounter_id = parsed_record["encounter_id"]
+
+            else:
+                if key not in parsed_value_by_key:
+                    if allow_missing_authorized:
+                        continue
+
+                    raise ValueError(
+                        "Authorized expected element is missing from "
+                        "the reconstructed FHIR payload."
+                    )
+
+                value = parsed_value_by_key[key]
         else:
             value = record["element_value"]
 
@@ -464,8 +524,8 @@ def build_wire_from_fhir(
         rows.append({
             "exchange_element_id": record["element_uid"],
             "scenario_id": record["scenario_id"],
-            "patient_id": record["patient_id"],
-            "encounter_id": record["encounter_id"],
+            "patient_id": received_patient_id,
+            "encounter_id": received_encounter_id,
             "group_id": record["group_id"],
             "element_group": record["element_group"],
             "element_name": record["element_name"],

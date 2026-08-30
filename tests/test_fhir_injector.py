@@ -8,6 +8,7 @@ from inject_failures.fhir_injector import (
     inject_fhir_element_loss,
     inject_fhir_numeric_value,
     inject_fhir_semantic_code_degradation,
+    inject_fhir_wrong_patient_linkage,
 )
 from config_loader import load_scenario
 from generate.synthetic_source import generate_source_truth
@@ -400,3 +401,176 @@ def test_fhir_element_loss_is_detected_end_to_end(tmp_path):
     assert row["verdict"] == "subfield_dropped"
     assert row["dimension"] == "fidelity"
     assert row["received_value"] == ""
+
+def test_inject_fhir_wrong_patient_linkage_changes_condition_subject(
+    tmp_path,
+):
+    bundle = {
+        "resourceType": "Bundle",
+        "type": "collection",
+        "entry": [
+            {
+                "resource": {
+                    "resourceType": "Condition",
+                    "id": "P1-E01-DX1",
+                    "code": {
+                        "coding": [{
+                            "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                            "code": "F41.1",
+                            "display": "Generalized anxiety disorder",
+                        }]
+                    },
+                    "subject": {
+                        "reference": "Patient/P1",
+                    },
+                    "encounter": {
+                        "reference": "Encounter/P1-E01",
+                    },
+                    "onsetDateTime": "2026-01-15",
+                }
+            }
+        ],
+    }
+
+    bundle_path = tmp_path / "P1-exchange.json"
+    bundle_path.write_text(
+        json.dumps(bundle),
+        encoding="utf-8",
+    )
+
+    expected = pd.DataFrame([
+        {
+            "element_uid": "A:P1:P1-E01:DX1:diagnosis_code",
+            "scenario_id": "A",
+            "patient_id": "P1",
+            "encounter_id": "P1-E01",
+            "group_id": "DX1",
+            "element_group": "diagnosis",
+            "element_name": "diagnosis_code",
+            "element_value": "F41.1",
+            "authorized": True,
+        },
+        {
+            "element_uid": "A:P1:P1-E01:DX1:diagnosis_display",
+            "scenario_id": "A",
+            "patient_id": "P1",
+            "encounter_id": "P1-E01",
+            "group_id": "DX1",
+            "element_group": "diagnosis",
+            "element_name": "diagnosis_display",
+            "element_value": "Generalized anxiety disorder",
+            "authorized": True,
+        },
+        {
+            "element_uid": "A:P1:P1-E01:DX1:diagnosis_onset",
+            "scenario_id": "A",
+            "patient_id": "P1",
+            "encounter_id": "P1-E01",
+            "group_id": "DX1",
+            "element_group": "diagnosis",
+            "element_name": "diagnosis_onset",
+            "element_value": "2026-01-15",
+            "authorized": True,
+        },
+        {
+            "element_uid": "A:P2:P2-E01:ENC:encounter_class",
+            "scenario_id": "A",
+            "patient_id": "P2",
+            "encounter_id": "P2-E01",
+            "group_id": "ENC",
+            "element_group": "encounter",
+            "element_name": "encounter_class",
+            "element_value": "AMB",
+            "authorized": True,
+        },
+    ])
+
+    ledger = inject_fhir_wrong_patient_linkage(
+        tmp_path,
+        expected,
+        "A",
+    )
+
+    mutated_bundle = json.loads(
+        bundle_path.read_text(encoding="utf-8")
+    )
+
+    condition = mutated_bundle["entry"][0]["resource"]
+
+    assert condition["subject"]["reference"] == "Patient/P2"
+    assert condition["encounter"]["reference"] == "Encounter/P1-E01"
+    assert condition["code"]["coding"][0]["code"] == "F41.1"
+
+    assert len(ledger) == 3
+    assert set(ledger["failure_stage"]) == {"fhir"}
+    assert set(ledger["failure_type"]) == {
+        "relink_wrong_patient"
+    }
+    assert set(ledger["expected_detection"]) == {
+        "patient_linkage"
+    }
+    assert set(ledger["original_value"]) == {"P1"}
+    assert set(ledger["injected_value"]) == {"P2"}
+    assert set(ledger["target_element_uid"]) == {
+        "A:P1:P1-E01:DX1:diagnosis_code",
+        "A:P1:P1-E01:DX1:diagnosis_display",
+        "A:P1:P1-E01:DX1:diagnosis_onset",
+    }
+
+def test_fhir_wrong_patient_linkage_is_detected_end_to_end(
+    tmp_path,
+):
+    scenario = load_scenario("A")
+
+    source_truth, patients = generate_source_truth(scenario)
+    expected = build_expected_exchange(
+        source_truth,
+        patients,
+    )
+
+    build_bundles(
+        expected,
+        patients,
+        tmp_path,
+    )
+
+    ledger = inject_fhir_wrong_patient_linkage(
+        tmp_path,
+        expected,
+        "A",
+    )
+
+    wire = build_wire_from_fhir(
+        expected,
+        scenario,
+        tmp_path,
+        allow_patient_linkage_corruption=True,
+    )
+
+    received = clean_received(wire)
+
+    results = validate(
+        expected,
+        received,
+        "A-fhir-patient-linkage-integration-test",
+    )
+
+    targets = results[
+        results["element_uid"].isin(
+            ledger["target_element_uid"]
+        )
+    ]
+
+    assert len(targets) == len(ledger)
+    assert set(targets["status"]) == {"FAIL"}
+    assert set(targets["verdict"]) == {"patient_linkage"}
+    assert set(targets["dimension"]) == {"linkage"}
+
+    injected_patient_id = ledger.iloc[0]["injected_value"]
+
+    assert set(targets["received_patient_id"]) == {
+        injected_patient_id
+    }
+    assert set(targets["patient_id"]) != {
+        injected_patient_id
+    }

@@ -273,3 +273,117 @@ def inject_fhir_element_loss(
         f"Target Observation {target_resource_id} was not found "
         f"in {bundle_path.name}."
     )
+
+def inject_fhir_wrong_patient_linkage(
+    bundle_dir: Path,
+    expected: pd.DataFrame,
+    scenario_id: str,
+) -> pd.DataFrame:
+    """Attach one Condition resource to the wrong patient in FHIR."""
+
+    eligible = expected[
+        (expected["authorized"])
+        & (expected["element_group"] == "diagnosis")
+    ]
+
+    if eligible.empty:
+        raise ValueError(
+            "No authorized diagnosis group is available "
+            "for FHIR patient-linkage injection."
+        )
+
+    target = eligible.iloc[0]
+
+    patient_id = str(target["patient_id"])
+    encounter_id = str(target["encounter_id"])
+    group_id = str(target["group_id"])
+
+    other_patients = sorted({
+        str(value)
+        for value in expected["patient_id"].dropna().unique()
+        if str(value) != patient_id
+    })
+
+    if not other_patients:
+        raise ValueError(
+            "FHIR patient-linkage injection requires at least two patients."
+        )
+
+    injected_patient_id = other_patients[0]
+    bundle_path = bundle_dir / f"{patient_id}-exchange.json"
+
+    if not bundle_path.exists():
+        raise FileNotFoundError(
+            f"FHIR bundle not found: {bundle_path}"
+        )
+
+    bundle: dict[str, Any] = json.loads(
+        bundle_path.read_text(encoding="utf-8")
+    )
+
+    target_resource_id = f"{encounter_id}-{group_id}"
+
+    for entry in bundle.get("entry", []):
+        resource = entry.get("resource", {})
+
+        if (
+            resource.get("resourceType") == "Condition"
+            and resource.get("id") == target_resource_id
+        ):
+            subject = resource.get("subject", {})
+            original_reference = subject.get("reference")
+
+            if original_reference != f"Patient/{patient_id}":
+                raise ValueError(
+                    "Target Condition does not reference the expected patient."
+                )
+
+            subject["reference"] = f"Patient/{injected_patient_id}"
+
+            bundle_path.write_text(
+                json.dumps(bundle, indent=2),
+                encoding="utf-8",
+            )
+
+            affected = expected[
+                (expected["authorized"])
+                & (expected["patient_id"].astype(str) == patient_id)
+                & (expected["encounter_id"].astype(str) == encounter_id)
+                & (expected["group_id"].astype(str) == group_id)
+                & (expected["element_group"] == "diagnosis")
+            ]
+
+            ledger_rows = []
+
+            for index, (_, row) in enumerate(
+                affected.iterrows(),
+                start=4,
+            ):
+                ledger_rows.append({
+                    "injection_id": (
+                        f"{scenario_id}-FHIR-INJ{index:04d}"
+                    ),
+                    "scenario_id": scenario_id,
+                    "failure_stage": "fhir",
+                    "failure_type": "relink_wrong_patient",
+                    "expected_detection": "patient_linkage",
+                    "target_element_uid": row["element_uid"],
+                    "target_patient_id": patient_id,
+                    "target_encounter_id": encounter_id,
+                    "element_name": row["element_name"],
+                    "element_group": row["element_group"],
+                    "original_value": patient_id,
+                    "injected_value": injected_patient_id,
+                    "detail": (
+                        "FHIR Condition subject.reference changed to "
+                        "a different patient while resource identity, "
+                        "encounter, and clinical values were preserved."
+                    ),
+                })
+
+            return pd.DataFrame(ledger_rows)
+
+    raise ValueError(
+        f"Target Condition {target_resource_id} was not found "
+        f"in {bundle_path.name}."
+    )
