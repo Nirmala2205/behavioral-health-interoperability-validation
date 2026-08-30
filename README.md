@@ -316,6 +316,9 @@ Start with
 [`docs/data_dictionary/v1_validation_contract.md`](docs/data_dictionary/v1_validation_contract.md)
 — it defines every element, rule, and denominator before any code runs.
 [`docs/walkthrough.md`](docs/walkthrough.md) traces a single element end to end.
+[`docs/manuscript/results_and_discussion.md`](docs/manuscript/results_and_discussion.md)
+provides a manuscript-ready account of the results, interpretation, validity
+threats, and future work.
 
 ---
 
