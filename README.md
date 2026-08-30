@@ -72,8 +72,10 @@ lawfully withheld Part 2 data never registers as data loss.
 
 ## Results
 
-Every number below is produced by `python src/run_pipeline.py` and written to
-`outputs/`.
+The pipeline produces the validation and evaluation results. Archived benchmark
+reports live under `outputs/benchmarks/`, and
+`python src/generate_statistical_report.py` reproducibly derives the reported
+Wilson confidence intervals from those artifacts.
 
 ### Micro-prototype — 10 synthetic patients, two scenarios
 
@@ -95,9 +97,30 @@ Every number below is produced by `python src/run_pipeline.py` and written to
 Completeness was independently recomputed from the injection ledger using
 arithmetic that shares no code with the engine: **96.18% vs 96.18%, agrees.**
 
-### Scaled benchmark — 500 synthetic patients, probabilistic injection
+### Scaled benchmark — 500 synthetic patients per scenario
 
-8,421 elements · 1,557 injected failures · **1,557 correctly classified · 0 false negatives · 0 false positives** · runtime under 4 seconds.
+The archived probabilistic benchmark evaluates 1,000 synthetic patient-scenario
+runs across two differently rendered exchange paths.
+
+| | Scenario A | Scenario B | Combined |
+|---|---:|---:|---:|
+| Evaluated elements | 8,421 | 8,347 | 16,768 |
+| Injected failures | 1,557 | 1,543 | 3,100 |
+| Correctly classified | 1,557 | 1,543 | 3,100 |
+| False negatives | 0 | 0 | 0 |
+| False positives | 0 | 0 | 0 |
+| True negatives | 6,864 | 6,804 | 13,668 |
+| Classification sensitivity | 100% | 100% | 100% |
+| Precision | 100% | 100% | 100% |
+| Specificity | 100% | 100% | 100% |
+
+The combined classification estimate is **3,100/3,100 (100%; 95% Wilson CI
+99.88%–100%)**. Combined specificity is **13,668/13,668 (100%; 95% Wilson CI
+99.97%–100%)**. These intervals quantify uncertainty from finite synthetic
+samples; they do not establish performance on real-world exchange data.
+
+Reproducible benchmark artifacts and statistical summaries are preserved under
+`outputs/benchmarks/`.
 
 ### Generalization across scenarios
 
@@ -107,10 +130,10 @@ text (`daily`), lower-case codes, a slower exchange path. None of those are
 data-quality failures, and a framework tuned to one schema would report them as
 findings.
 
-| Scenario | Classification sensitivity | Precision | Specificity | False positives |
-|---|---|---|---|---|
-| A | 100% | 100% | 100% | 0 |
-| B | 100% | 100% | 100% | 0 |
+| Scenario | Correctly classified | Classification sensitivity (95% CI) | Precision (95% CI) | Specificity (95% CI) |
+|---|---:|---:|---:|---:|
+| A | 1,557/1,557 | 100% (99.75%–100%) | 100% (99.75%–100%) | 100% (99.94%–100%) |
+| B | 1,543/1,543 | 100% (99.75%–100%) | 100% (99.75%–100%) | 100% (99.94%–100%) |
 
 Both scenarios also run clean (zero injections → **zero findings**), which is
 the sharpest false-positive test available: any finding in a clean run has
@@ -119,7 +142,11 @@ nowhere to hide.
 ### Reproducibility
 
 `--verify-reproducible` runs the entire pipeline twice and compares SHA-256
-hashes of every output. **Identical.**
+hashes of every output. **Identical.** Each FHIR build first clears generated
+bundles from the prior run, preventing a changed patient count from leaving
+stale resources in the corpus. The archived primary and held-out benchmark
+reports can be converted back into the same 34-row CSV and JSON statistical
+summaries with `python src/generate_statistical_report.py`.
 
 ---
 
@@ -147,11 +174,11 @@ A diagnosis code degrades to its ICD-10-CM category ancestor (`F32.1 → F32`) �
 a genuine loss of specificity that is deliberately absent from the curated
 equivalence map.
 
-| | Detection sensitivity | Classification sensitivity |
-|---|---|---|
-| Curated degradations | 100% | 100% |
-| **Uncurated degradations** | **100%** | **0%** — reported as `value_mismatch` |
-| Combined | 100% | **50%** |
+| | Detection sensitivity (95% CI) | Classification sensitivity (95% CI) |
+|---|---:|---:|
+| Curated degradations | 10/10, 100% (72.25%–100%) | 10/10, 100% (72.25%–100%) |
+| **Uncurated degradations** | **10/10, 100% (72.25%–100%)** | **0/10, 0% (0%–27.75%)** — reported as `value_mismatch` |
+| Combined | 20/20, 100% (83.89%–100%) | **10/20, 50% (29.93%–70.07%)** |
 
 The honest characterization: **a curated-terminology approach does not miss
 things, it mislabels the things outside its curation.** The implication — that a
@@ -161,11 +188,12 @@ than an opinion.
 
 ---
 
-## Two bugs worth reading about
+## Four bugs worth reading about
 
-Both were found by the pipeline's own diagnostics, and both were defects in the
-**measurement**, not the detector. They are documented in the code because how a
-framework fails is more informative than that it eventually passed.
+The first three surfaced through evaluation and reproducibility checks; the
+fourth was found during final code-and-documentation review. They are documented
+because how an evaluation framework fails is more informative than the fact that
+it eventually passed.
 
 **1. Phantom false positives from baseline latency.**
 Scenario B's original transmission config (25 min base + up to 40 min jitter)
@@ -185,8 +213,28 @@ timeliness sensitivity for a detector behaving correctly on every one of them.
 Fixed by making the injector compute the delay actually required to cross each
 element's threshold.
 
-The general lesson, which applies to any evaluation of this kind: **an injected
-failure is only ground truth if it actually produces the failure condition.**
+**3. Stale FHIR bundles surviving between runs.**
+A scaled run followed by a smaller run left hundreds of old generated bundles in
+the live exchange directory. Because each run is intended to create one complete
+corpus, files from a previous patient count could contaminate corpus validation
+and reproducibility evidence. Fixed by clearing only generated
+`*-exchange.json` files before rebuilding the corpus, with a regression test
+covering the cleanup behavior.
+
+**4. A CLI option accepted but never dispatched.**
+The pipeline advertised `--fhir-failure patient-linkage`, and the injector and
+receiver both had end-to-end component tests, but a duplicated `element-loss`
+branch meant the patient-linkage injector was never called by `run_scenario()`.
+A clean CLI run could therefore complete with no injected linkage failure.
+Fixed by wiring the option to `inject_fhir_wrong_patient_linkage` and adding a
+pipeline-dispatch regression test. The corrected path injects three related
+diagnosis elements at the FHIR layer and classifies all three as
+`patient_linkage`.
+
+The broader lesson: **an injected failure is ground truth only if it actually
+produces the failure condition, enters the evaluated path, and is isolated from
+state left by earlier runs.** Detector performance is uninterpretable unless the
+evaluation machinery proves all three.
 
 ---
 
@@ -198,16 +246,22 @@ python -m venv .venv && source .venv/bin/activate    # Windows: .venv\Scripts\ac
 pip install -r requirements.txt
 
 python src/run_pipeline.py                    # both scenarios, micro-prototype
-python -m pytest tests/ -q                    # 94 tests
+python -m pytest tests/ -q                    # 116 tests
+python src/generate_statistical_report.py    # rebuild benchmark CIs
 ```
 
 | Command | What it does |
 |---|---|
-| `--scenarios A` | one scenario only |
-| `--clean` | zero injections — the false-positive check |
-| `--patients 500 --mode probabilistic` | Stage B scaled benchmark |
-| `--profile blindspots` | adversarial run against known limitations |
-| `--verify-reproducible` | run twice, compare output hashes |
+| `--scenarios A` | run one scenario only |
+| `--clean` | run with zero destination-stage injections for a false-positive check |
+| `--patients 500 --mode probabilistic` | run the scaled probabilistic benchmark |
+| `--profile blindspots` | run the adversarial terminology evaluation |
+| `--fhir-failure <mode>` | inject one FHIR-layer failure; modes: `numeric`, `semantic`, `element-loss`, `patient-linkage` |
+| `--verify-reproducible` | run twice and compare output hashes |
+
+The four FHIR-stage modes reuse the same clinical failure classes as the
+destination-stage injector, allowing the framework to test whether corruption
+introduced on the wire survives parsing and is still classified correctly.
 
 Outputs land in `outputs/` (metrics, Power BI inputs), `data/processed/`
 (element-level results), and `fhir/exchange/` (FHIR R4 bundles).
@@ -221,11 +275,11 @@ Outputs land in `outputs/` (metrics, Power BI inputs), `data/processed/`
 | Synthetic generation | Python (deterministic, seeded) | non-PHI source patients — see note below |
 | Source / destination modeling | pandas, CSV | element-level long-form tables |
 | Exchange representation | FHIR R4 JSON | Patient, Encounter, Condition, Observation, MedicationRequest, Consent |
-| Failure injection | Python | 12 failure types + a ground-truth ledger |
+| Failure injection | Python | 10 primary failure types, one negative control, one held-out adversarial variant, and a ground-truth ledger |
 | Validation engine | Python | normalization, comparison, classification |
 | Aggregation | DuckDB / SQL | completeness, fidelity, run summary |
 | Evaluation | Python | TP/FP/FN/TN, sensitivity, precision, specificity |
-| Testing | pytest | 94 tests |
+| Testing | pytest | 116 tests |
 | Visualization | Power BI | 8-page dashboard over the output tables |
 
 **Why not Synthea.** The blueprint allowed "Synthea and/or controlled custom
@@ -251,7 +305,7 @@ config/     Validation Contract, consent rules, code equivalence,
             exchange scenarios, injection profiles
 src/        generate/ transform/ inject_failures/ validate/ metrics/
 sql/        completeness, fidelity, run summary (executed by the pipeline)
-tests/      94 tests, including contract/documentation sync
+tests/      116 tests, including contract/documentation sync
 docs/       data dictionary, methodology, architecture, walkthrough
 fhir/       generated FHIR R4 bundles
 outputs/    metrics and Power BI input tables
