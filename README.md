@@ -1,5 +1,7 @@
 # Behavioral Health Interoperability Validation Framework
 
+[![Tests](https://github.com/Nirmala2205/behavioral-health-interoperability-validation/actions/workflows/tests.yml/badge.svg)](https://github.com/Nirmala2205/behavioral-health-interoperability-validation/actions/workflows/tests.yml)
+
 A reproducible proof-of-concept that detects and quantifies **silent
 data-quality failures** during behavioral-health information exchange — the
 kind that leave a record looking technically fine while its clinical content
