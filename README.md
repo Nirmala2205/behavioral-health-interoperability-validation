@@ -142,7 +142,7 @@ These results do not establish performance on unanticipated failure modes, indep
 To probe a known limitation, the repository includes a held-out terminology profile:
 
 ```bash
-python src/run_pipeline.py --scenarios A --profile blindspots
+python src/run_pipeline.py --profile blindspots --patients 500
 ```
 
 The profile constructs diagnosis-code degradations using an ICD-10-CM category-ancestor relationship (`F32.1 → F32`) that is deliberately withheld from the curated equivalence map.
