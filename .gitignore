@@ -20,3 +20,14 @@ Thumbs.db
 # which for a portfolio project is most of the audience.
 # Local FHIR validator binary
 tools/validator_cli.jar
+
+# Local secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
