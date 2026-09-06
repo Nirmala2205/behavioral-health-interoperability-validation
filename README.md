@@ -26,47 +26,41 @@ information that was expected and authorized to move, what arrived, what
 changed, what did not arrive, and how confidently can we detect the
 difference?**
 
-Behavioral health is where this matters most and is studied least. 68% of
-behavioral-health facilities use an EHR, but only 19% participate in a health
-information exchange, and 67% do not know whether an HIE is even available to
-them.¹ The 2009 HITECH Act's $25B+ in adoption incentives excluded behavioral
-health facilities, so the sector never built the exchange infrastructure or the
-institutional expertise that physical health spent fifteen years accumulating.
-On top of that, substance-use-disorder records carry an additional consent
-layer under 42 CFR Part 2 — whose Final Rule compliance deadline passed in
-February 2026 — which means **correctly withheld data and lost data look
-identical at the destination.** A validation method that cannot tell those
-apart is not merely imprecise; it penalizes organizations for protecting
-patients.
+Behavioral-health exchange raises an additional validation problem: information may be absent because it was lost, altered, or intentionally excluded from an authorized exchange. In this synthetic proof of concept, the expected exchange is therefore defined as the subset of source information both expected and authorized to move.
+
+The authorization model used here is synthetic and simplified. It is motivated by privacy-sensitive behavioral-health exchange, including constraints such as 42 CFR Part 2, but it is not an implementation of those regulations.
 
 ---
 
 ## What this does
 
-```
-SOURCE_TRUTH  ──►  EXPECTED_EXCHANGE  ──►  FHIR R4  ──►  RECEIVED_DATA  ──►  VALIDATION
-what the           what consent           wire            what the             what survived
-sender has         authorized             format          receiver has         and what didn't
-                        │                                      ▲
-                        └──────── controlled failure injection ┘
-                                  (with a ground-truth ledger)
+```text
+SOURCE_TRUTH
+    |
+    v
+EXPECTED_AUTHORIZED_EXCHANGE
+    |
+    v
+FHIR R4  ->  RECEIVED_DATA  ->  VALIDATION_RESULTS
+                 ^
+                 |
+       controlled failure injection
+       (ground-truth ledger kept separate)
 ```
 
-Six validation dimensions, each answering a distinct question:
+Seven validation dimensions, each answering a distinct question:
 
 | Dimension | Question | Example failure |
 |---|---|---|
-| **Completeness** | Did every expected element arrive? | PHQ-9 expected, absent |
-| **Fidelity** | Did values survive intact? | PHQ-9 18 → 8 |
-| **Semantic preservation** | Did clinical meaning survive? | `F32.1` → `F32.9` (severity lost) |
-| **Record linkage** | Right patient, right encounter? | assessment on the wrong visit |
-| **Timeliness** | Did it arrive in the clinically useful window? | crisis data 4 hours late |
-| **Consent correctness** | Were restrictions honored — in both directions? | Part 2 element disclosed, or wrongly withheld |
+| **Completeness** | Did every expected element arrive? | expected assessment element absent |
+| **Fidelity** | Did values survive intact? | numeric score altered |
+| **Semantic preservation** | Did clinical meaning survive? | diagnosis code replaced with a less-specific code |
+| **Authorization correctness** | Was only authorized information exchanged, without wrongly withholding authorized information? | restricted element disclosed, or authorized element withheld |
+| **Patient linkage** | Was the information linked to the correct patient? | record assigned to the wrong patient |
+| **Encounter linkage** | Was the information linked to the correct encounter? | assessment assigned to the wrong visit |
+| **Timeliness** | Did it arrive within the expected exchange window? | data arrived outside the configured threshold |
 
-**The central design decision** is that the comparison is *not* source vs.
-destination. It is source → **expected/authorized** → received. Consent-excluded
-elements are removed from the denominator before anything is counted, so
-lawfully withheld Part 2 data never registers as data loss.
+**The central design decision** is that the comparison is not simply source vs. destination. It is source -> **expected/authorized exchange** -> received. Elements excluded by the synthetic authorization rules are removed from the expected denominator before completeness is evaluated, allowing authorized withholding to be distinguished from simulated data loss within the benchmark.
 
 ---
 
@@ -122,57 +116,36 @@ samples; they do not establish performance on real-world exchange data.
 Reproducible benchmark artifacts and statistical summaries are preserved under
 `outputs/benchmarks/`.
 
-### Generalization across scenarios
+### Robustness across synthetic scenarios
 
-Scenario B is the same clinical content rendered differently on the wire: doses
-in grams instead of milligrams, HL7 GTS abbreviations (`QD`) instead of free
-text (`daily`), lower-case codes, a slower exchange path. None of those are
-data-quality failures, and a framework tuned to one schema would report them as
-findings.
+Scenario B contains the same kinds of synthetic clinical information but represents several values differently on the exchange path, including dose units, schedule notation, code casing, and timing. These representation differences were intentionally treated as non-failures so the benchmark could test whether the framework distinguished equivalent representations from injected data-quality defects.
 
 | Scenario | Correctly classified | Classification sensitivity (95% CI) | Precision (95% CI) | Specificity (95% CI) |
 |---|---:|---:|---:|---:|
 | A | 1,557/1,557 | 100% (99.75%–100%) | 100% (99.75%–100%) | 100% (99.94%–100%) |
 | B | 1,543/1,543 | 100% (99.75%–100%) | 100% (99.75%–100%) | 100% (99.94%–100%) |
 
-Both scenarios also run clean (zero injections → **zero findings**), which is
-the sharpest false-positive test available: any finding in a clean run has
-nowhere to hide.
+Both scenarios also completed clean runs with zero injected failures and zero findings, providing a direct false-positive check within the synthetic benchmark.
 
 ### Reproducibility
 
-`--verify-reproducible` runs the entire pipeline twice and compares SHA-256
-hashes of every output. **Identical.** Each FHIR build first clears generated
-bundles from the prior run, preventing a changed patient count from leaving
-stale resources in the corpus. The archived primary and held-out benchmark
-reports can be converted back into the same 34-row CSV and JSON statistical
-summaries with `python src/generate_statistical_report.py`.
+`--verify-reproducible` runs the pipeline twice and compares SHA-256 hashes of the generated outputs. The tested runs produced identical output hashes. Each FHIR build first clears generated bundles from the prior run, preventing a changed patient count from leaving stale resources in the corpus. The archived primary and held-out benchmark reports can also be converted back into the same 34-row CSV and JSON statistical summaries with `python src/generate_statistical_report.py`.
 
 ---
 
 ## What the perfect scores do and do not mean
 
-100% sensitivity on synthetic, self-injected failures is a **necessary
-condition, not an achievement.** It demonstrates the comparison rules are
-internally consistent, the reference standard is sound, and the consent
-denominator behaves correctly. It says nothing about performance against
-real-world failures whose modes were never anticipated — and the failures that
-matter most in practice are precisely the unanticipated ones.
+The 100% primary-benchmark results show that, for the predefined synthetic failure modes and reference data used here, the detector and evaluation logic behaved consistently with the injected ground truth. They also show that the authorization-aware denominator operated as intended within the tested scenarios.
 
-Anyone reporting these numbers as evidence the method "works" on real exchange
-data would be overclaiming. They are evidence the method is *ready to be tested*
-on real data.
+These results do not establish performance on unanticipated failure modes, independently annotated data, or real-world exchange data. The framework should therefore be interpreted as a synthetic proof of concept and a candidate for further independent and real-data evaluation under appropriate governance.
 
-To keep that honest, the repository includes an **adversarial profile** that
-injects a failure the framework is known to handle badly:
+To probe a known limitation, the repository includes a held-out terminology profile:
 
 ```bash
 python src/run_pipeline.py --scenarios A --profile blindspots
 ```
 
-A diagnosis code degrades to its ICD-10-CM category ancestor (`F32.1 → F32`) —
-a genuine loss of specificity that is deliberately absent from the curated
-equivalence map.
+The profile constructs diagnosis-code degradations using an ICD-10-CM category-ancestor relationship (`F32.1 → F32`) that is deliberately withheld from the curated equivalence map.
 
 | | Detection sensitivity (95% CI) | Classification sensitivity (95% CI) |
 |---|---:|---:|
@@ -180,12 +153,7 @@ equivalence map.
 | **Uncurated degradations** | **10/10, 100% (72.25%–100%)** | **0/10, 0% (0%–27.75%)** — reported as `value_mismatch` |
 | Combined | 20/20, 100% (83.89%–100%) | **10/20, 50% (29.93%–70.07%)** |
 
-The honest characterization: **a curated-terminology approach does not miss
-things, it mislabels the things outside its curation.** The implication — that a
-dissertation-scale version must derive equivalence from the ICD-10-CM hierarchy
-and RxNorm graph rather than a YAML file — follows from a measurement rather
-than an opinion.
-
+In this held-out benchmark, all 20 tested terminology degradations were detected, but the 10 cases outside the curated equivalence map were misclassified as `value_mismatch`. This result identifies a limitation of the hand-curated mapping approach and motivates future evaluation of hierarchy- or terminology-graph-based semantic equivalence.
 ---
 
 ## Four bugs worth reading about
@@ -355,9 +323,6 @@ $20M+ in funding, calls itself a pilot testing two standards. That is the right
 scale to calibrate against.
 
 ---
-
-¹ ONC/ASTP, *Electronic Health Record Adoption and Exchange Capabilities Among
-Substance Use and Mental Health Treatment Facilities*, 2024.
 
 **Standards referenced:** HL7 FHIR R4 (4.0.1) · US Behavioral Health Profiles IG
 v0.1.0 · USCDI+ Behavioral Health · LOINC · ICD-10-CM · RxNorm · UCUM ·
