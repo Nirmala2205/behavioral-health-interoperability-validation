@@ -327,4 +327,4 @@ real PHI; automated remediation; any claim about real-world prevalence.
 
 | Version | Date | Change |
 |---|---|---|
-| 1.0.0 | 2026-08-16 | Initial contract. 11 elements, 4 groups, 6 validation dimensions, 3 consent states, 11 injectable failure types. |
+| 1.0.0 | 2026-08-16 | Initial contract. 11 elements, 4 groups, 7 validation dimensions, 3 consent states, 10 primary failure types plus 1 negative control. |

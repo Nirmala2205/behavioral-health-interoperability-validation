@@ -250,7 +250,7 @@ Outputs land in `outputs/` (metrics, Power BI inputs), `data/processed/`
 | Aggregation | DuckDB / SQL | completeness, fidelity, run summary |
 | Evaluation | Python | TP/FP/FN/TN, sensitivity, precision, specificity |
 | Testing | pytest | 116 tests |
-| Visualization | Power BI | 8-page dashboard over the output tables |
+| Planned visualization | Power BI | 8-page dashboard specification for future implementation |
 
 **Why not Synthea.** The blueprint allowed "Synthea and/or controlled custom
 synthetic records," and V1 uses controlled generation deliberately: a validation
